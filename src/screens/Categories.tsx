@@ -31,7 +31,7 @@ export function Categories() {
                     <div className="d-flex justify-content-between align-items-center mb-2">
                         <h2>Categorías</h2>
                         <button className="btn btn-primary btn-sm" onClick={() => setShowForm('NEW')}>
-                            Nuevo
+                            Nueva
                         </button>
                     </div>
                     <TableComponent

@@ -1,38 +1,47 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type LayoutProps = {
     children: React.ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
+
+    const navigate = useNavigate();
+
     return (
         <div>
             <header>
                 <nav>
                     <ul className="d-flex p-3 justify-content-end list-unstyled gap-4">
                         <li>
-                            <Link to="/">Productos</Link>
+                            <button className="btn btn-secondary" onClick={() => navigate('/')}>
+                                Productos
+                            </button>
                         </li>
                         <li>
-                            <Link to="/clients">Clientes</Link>
+                            <button className="btn btn-secondary">Clientes</button>
                         </li>
                         <li>
-                            <Link to="/sales">Ventas</Link>
+                            <button className="btn btn-secondary">Ventas</button>
                         </li>
                         <li>
-                            <Link to="/buys">Compras</Link>
+                            <button className="btn btn-secondary">Compras</button>
                         </li>
                         <li>
-                            <Link to="/categories">Categorías</Link>
+                            <button className="btn btn-secondary" onClick={() => navigate('/categories')}>
+                                Categorías
+                            </button>
                         </li>
                         <li>
-                            <Link to="/suppliers">Proveedores</Link>
+                            <button className="btn btn-secondary" onClick={() => navigate('/suppliers')}>
+                                Proveedores
+                            </button>
                         </li>
                         <li>
-                            <Link to="/stores">Depósitos</Link>
+                            <button className="btn btn-secondary">Depósitos</button>
                         </li>
                         <li>
-                            <Link to="/logout">Salir</Link>
+                            <button className="btn btn-secondary">Salir</button>
                         </li>
                     </ul>
                 </nav>
