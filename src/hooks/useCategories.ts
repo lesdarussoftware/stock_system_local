@@ -5,6 +5,7 @@ import { MessageContext } from "../contexts/MessageContext";
 
 import { useForm } from "./useForm";
 
+import { categoryHasNotChildren, nameDoesNotExist } from "../middlewares/category";
 import { Category, db } from "../utils/db";
 
 export function useCategories() {
@@ -29,17 +30,23 @@ export function useCategories() {
         const { formData, validate, reset } = categoryFormData;
         if (validate()) {
             try {
-                if (showForm === 'NEW') {
-                    await db.categories.add({ ...formData, id: undefined });
-                    setBodyMessage('Categoría guardada correctamente.');
-                } else if (showForm === 'EDIT') {
-                    await db.categories.update(formData.id, formData);
-                    setBodyMessage('Categoría editada correctamente.');
+                const isValid = await nameDoesNotExist(formData.name);
+                if (isValid) {
+                    if (showForm === 'NEW') {
+                        await db.categories.add({ ...formData, id: undefined });
+                        setBodyMessage('Categoría guardada correctamente.');
+                    } else if (showForm === 'EDIT') {
+                        await db.categories.update(formData.id, formData);
+                        setBodyMessage('Categoría editada correctamente.');
+                    }
+                    setSeverity('SUCCESS');
+                    setShowForm(null);
+                    reset();
+                    getCategories();
+                } else {
+                    setSeverity('ERROR');
+                    setBodyMessage('Esa categoría ya existe.');
                 }
-                setSeverity('SUCCESS');
-                setShowForm(null);
-                reset();
-                getCategories();
             } catch (e) {
                 setSeverity('ERROR');
                 setBodyMessage('Hubo un error al intentar guardar la categoría.');
@@ -47,6 +54,26 @@ export function useCategories() {
             setHeaderMessage(formData.name);
             setOpenMessage(true);
         }
+    }
+
+    async function deleteCategory(formData: Category) {
+        try {
+            const isValid = await categoryHasNotChildren(formData.id);
+            if (isValid) {
+                await db.categories.delete(+formData.id);
+                setBodyMessage('Categoría eliminada correctamente.');
+                setSeverity('SUCCESS');
+                getCategories();
+            } else {
+                setSeverity('ERROR');
+                setBodyMessage('Esta categoría tiene productos asociados.');
+            }
+        } catch (e) {
+            setSeverity('ERROR');
+            setBodyMessage('Hubo un error al intentar eliminar la categoría.');
+        }
+        setHeaderMessage(formData.name);
+        setOpenMessage(true);
     }
 
     const columns = useMemo(() => [
@@ -74,6 +101,7 @@ export function useCategories() {
         categoryFormData,
         showForm,
         setShowForm,
-        handleSubmit
+        handleSubmit,
+        deleteCategory
     }
 }

@@ -28,7 +28,8 @@ export function TableComponent({ columns, rows, actions = false }: TableComponen
                             <tr key={row.id}>
                                 {actions &&
                                     <td>
-                                        <button type="button" className="btn btn-warning btn-sm me-2">Editar</button>
+                                        <button type="button" className="btn btn-info btn-sm me-2">Ver</button>
+                                        <button type="button" className="btn btn-warning btn-sm mx-2">Editar</button>
                                         <button type="button" className="btn btn-danger btn-sm">Eliminar</button>
                                     </td>
                                 }

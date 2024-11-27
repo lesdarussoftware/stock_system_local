@@ -5,6 +5,7 @@ import { MessageContext } from "../contexts/MessageContext";
 
 import { useForm } from "./useForm";
 
+import { nameDoesNotExist, supplierHasNotProducts } from "../middlewares/supplier";
 import { db, Supplier } from "../utils/db";
 
 export function useSuppliers() {
@@ -42,17 +43,23 @@ export function useSuppliers() {
         const { formData, validate, reset } = supplierFormData;
         if (validate()) {
             try {
-                if (showForm === 'NEW') {
-                    await db.suppliers.add({ ...formData, id: undefined });
-                    setBodyMessage('Proveedor guardado correctamente.');
-                } else if (showForm === 'EDIT') {
-                    await db.suppliers.update(formData.id, formData);
-                    setBodyMessage('Proveedor editado correctamente.');
+                const isValid = await nameDoesNotExist(formData.name);
+                if (isValid) {
+                    if (showForm === 'NEW') {
+                        await db.suppliers.add({ ...formData, id: undefined });
+                        setBodyMessage('Proveedor guardado correctamente.');
+                    } else if (showForm === 'EDIT') {
+                        await db.suppliers.update(formData.id, formData);
+                        setBodyMessage('Proveedor editado correctamente.');
+                    }
+                    setSeverity('SUCCESS');
+                    setShowForm(null);
+                    reset();
+                    getSuppliers();
+                } else {
+                    setSeverity('ERROR');
+                    setBodyMessage('Ese proveedor ya existe.');
                 }
-                setSeverity('SUCCESS');
-                setShowForm(null);
-                reset();
-                getSuppliers();
             } catch (e) {
                 setSeverity('ERROR');
                 setBodyMessage('Hubo un error al intentar guardar el proveedor.');
@@ -60,6 +67,26 @@ export function useSuppliers() {
             setHeaderMessage(formData.name);
             setOpenMessage(true);
         }
+    }
+
+    async function deleteSupplier(formData: Supplier) {
+        try {
+            const isValid = await supplierHasNotProducts(formData.id);
+            if (isValid) {
+                await db.suppliers.delete(+formData.id);
+                setBodyMessage('Proveedor eliminado correctamente.');
+                setSeverity('SUCCESS');
+                getSuppliers();
+            } else {
+                setSeverity('ERROR');
+                setBodyMessage('Este proveedor tiene productos asociados.');
+            }
+        } catch (e) {
+            setSeverity('ERROR');
+            setBodyMessage('Hubo un error al intentar eliminar el proveedor.');
+        }
+        setHeaderMessage(formData.name);
+        setOpenMessage(true);
     }
 
     const columns = useMemo(() => [
@@ -102,6 +129,7 @@ export function useSuppliers() {
         supplierFormData,
         showForm,
         setShowForm,
-        handleSubmit
+        handleSubmit,
+        deleteSupplier
     }
 }

@@ -38,7 +38,7 @@ export function Products() {
                 <>
                     <div className="d-flex justify-content-between align-items-center mb-2">
                         <h2>Productos</h2>
-                        <button className="btn btn-primary btn-sm" onClick={() => setShowForm('NEW')}>
+                        <button className="btn btn-primary" onClick={() => setShowForm('NEW')}>
                             Nuevo
                         </button>
                     </div>

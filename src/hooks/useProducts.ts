@@ -5,6 +5,7 @@ import { MessageContext } from "../contexts/MessageContext";
 
 import { useForm } from "./useForm";
 
+import { skuDoesNotExist } from "../middlewares/product";
 import { db, Product } from "../utils/db";
 
 export function useProducts() {
@@ -46,7 +47,7 @@ export function useProducts() {
             db.categories.toArray(),
             db.suppliers.toArray()
         ]);
-        setProducts(data.map(p => ({
+        setProducts(data.filter(p => p.is_active).map(p => ({
             ...p,
             category: categories.find(c => c.id === +p.category_id)!.name,
             supplier: suppliers.find(s => s.id === +p.supplier_id)!.name
@@ -58,17 +59,23 @@ export function useProducts() {
         const { formData, validate, reset } = productFormData;
         if (validate()) {
             try {
-                if (showForm === 'NEW') {
-                    await db.products.add({ ...formData, id: undefined });
-                    setBodyMessage('Producto guardado correctamente.');
-                } else if (showForm === 'EDIT') {
-                    await db.products.update(formData.id, formData);
-                    setBodyMessage('Producto editado correctamente.');
+                const isValid = await skuDoesNotExist(formData.sku);
+                if (isValid) {
+                    if (showForm === 'NEW') {
+                        await db.products.add({ ...formData, id: undefined });
+                        setBodyMessage('Producto guardado correctamente.');
+                    } else if (showForm === 'EDIT') {
+                        await db.products.update(formData.id, formData);
+                        setBodyMessage('Producto editado correctamente.');
+                    }
+                    setSeverity('SUCCESS');
+                    setShowForm(null);
+                    reset();
+                    getProducts();
+                } else {
+                    setSeverity('ERROR');
+                    setBodyMessage(`El sku ${formData.sku} ya existe.`);
                 }
-                setSeverity('SUCCESS');
-                setShowForm(null);
-                reset();
-                getProducts();
             } catch (e) {
                 setSeverity('ERROR');
                 setBodyMessage('Hubo un error al intentar guardar el producto.');
