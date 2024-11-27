@@ -1,11 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
+
+import { MessageContext } from "../contexts/MessageContext";
 
 import { useForm } from "./useForm";
 
 import { db, Supplier } from "../utils/db";
 
 export function useSuppliers() {
+
+    const { setBodyMessage, setHeaderMessage, setSeverity, setOpenMessage } = useContext(MessageContext);
 
     const supplierFormData = useForm({
         defaultData: {
@@ -37,14 +41,24 @@ export function useSuppliers() {
         e.preventDefault();
         const { formData, validate, reset } = supplierFormData;
         if (validate()) {
-            if (showForm === 'NEW') {
-                await db.suppliers.add({ ...formData, id: undefined });
-            } else if (showForm === 'EDIT') {
-                await db.suppliers.update(formData.id, formData);
+            try {
+                if (showForm === 'NEW') {
+                    await db.suppliers.add({ ...formData, id: undefined });
+                    setBodyMessage('Proveedor guardado correctamente.');
+                } else if (showForm === 'EDIT') {
+                    await db.suppliers.update(formData.id, formData);
+                    setBodyMessage('Proveedor editado correctamente.');
+                }
+                setSeverity('SUCCESS');
+                setShowForm(null);
+                reset();
+                getSuppliers();
+            } catch (e) {
+                setSeverity('ERROR');
+                setBodyMessage('Hubo un error al intentar guardar el proveedor.');
             }
-            setShowForm(null);
-            reset();
-            getSuppliers();
+            setHeaderMessage(formData.name);
+            setOpenMessage(true);
         }
     }
 

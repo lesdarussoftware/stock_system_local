@@ -1,11 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
+
+import { MessageContext } from "../contexts/MessageContext";
 
 import { useForm } from "./useForm";
 
 import { Category, db } from "../utils/db";
 
 export function useCategories() {
+
+    const { setBodyMessage, setHeaderMessage, setSeverity, setOpenMessage } = useContext(MessageContext);
 
     const categoryFormData = useForm({
         defaultData: { id: '', name: '', description: '' },
@@ -24,14 +28,24 @@ export function useCategories() {
         e.preventDefault();
         const { formData, validate, reset } = categoryFormData;
         if (validate()) {
-            if (showForm === 'NEW') {
-                await db.categories.add({ ...formData, id: undefined });
-            } else if (showForm === 'EDIT') {
-                await db.categories.update(formData.id, formData);
+            try {
+                if (showForm === 'NEW') {
+                    await db.categories.add({ ...formData, id: undefined });
+                    setBodyMessage('Categoría guardada correctamente.');
+                } else if (showForm === 'EDIT') {
+                    await db.categories.update(formData.id, formData);
+                    setBodyMessage('Categoría editada correctamente.');
+                }
+                setSeverity('SUCCESS');
+                setShowForm(null);
+                reset();
+                getCategories();
+            } catch (e) {
+                setSeverity('ERROR');
+                setBodyMessage('Hubo un error al intentar guardar la categoría.');
             }
-            setShowForm(null);
-            reset();
-            getCategories();
+            setHeaderMessage(formData.name);
+            setOpenMessage(true);
         }
     }
 

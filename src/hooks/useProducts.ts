@@ -1,11 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
+
+import { MessageContext } from "../contexts/MessageContext";
 
 import { useForm } from "./useForm";
 
 import { db, Product } from "../utils/db";
 
 export function useProducts() {
+
+    const { setBodyMessage, setHeaderMessage, setSeverity, setOpenMessage } = useContext(MessageContext);
 
     const productFormData = useForm({
         defaultData: {
@@ -37,22 +41,40 @@ export function useProducts() {
     const [showForm, setShowForm] = useState<'NEW' | 'EDIT' | null>(null);
 
     async function getProducts() {
-        const data = await db.products.toArray();
-        setProducts(data);
+        const [data, categories, suppliers] = await Promise.all([
+            db.products.toArray(),
+            db.categories.toArray(),
+            db.suppliers.toArray()
+        ]);
+        setProducts(data.map(p => ({
+            ...p,
+            category: categories.find(c => c.id === +p.category_id)!.name,
+            supplier: suppliers.find(s => s.id === +p.supplier_id)!.name
+        })));
     }
 
     async function handleSubmit(e: any) {
         e.preventDefault();
         const { formData, validate, reset } = productFormData;
         if (validate()) {
-            if (showForm === 'NEW') {
-                await db.products.add({ ...formData, id: undefined });
-            } else if (showForm === 'EDIT') {
-                await db.products.update(formData.id, formData);
+            try {
+                if (showForm === 'NEW') {
+                    await db.products.add({ ...formData, id: undefined });
+                    setBodyMessage('Producto guardado correctamente.');
+                } else if (showForm === 'EDIT') {
+                    await db.products.update(formData.id, formData);
+                    setBodyMessage('Producto editado correctamente.');
+                }
+                setSeverity('SUCCESS');
+                setShowForm(null);
+                reset();
+                getProducts();
+            } catch (e) {
+                setSeverity('ERROR');
+                setBodyMessage('Hubo un error al intentar guardar el producto.');
             }
-            setShowForm(null);
-            reset();
-            getProducts();
+            setHeaderMessage(formData.name);
+            setOpenMessage(true);
         }
     }
 
