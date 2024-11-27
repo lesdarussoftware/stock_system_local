@@ -85,6 +85,7 @@ export function useCategories() {
         {
             id: 'name',
             label: 'Nombre',
+            sortable: true,
             accessor: 'name'
         },
         {

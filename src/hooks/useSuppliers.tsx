@@ -98,6 +98,7 @@ export function useSuppliers() {
         {
             id: 'name',
             label: 'Nombre',
+            sortable: true,
             accessor: 'name'
         },
         {

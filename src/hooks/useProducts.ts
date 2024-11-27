@@ -89,16 +89,19 @@ export function useProducts() {
         {
             id: 'id',
             label: '#',
+            sortable: true,
             accessor: 'id'
         },
         {
             id: 'name',
             label: 'Nombre',
+            sortable: true,
             accessor: 'name'
         },
         {
             id: 'sku',
             label: 'SKU',
+            sortable: true,
             accessor: 'sku'
         },
         {
