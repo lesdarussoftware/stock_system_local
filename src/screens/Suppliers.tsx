@@ -21,7 +21,7 @@ export function Suppliers() {
         setFilter,
         totalRows
     } = useSuppliers();
-    const { formData } = supplierFormData;
+    const { formData, setFormData } = supplierFormData;
 
     useEffect(() => {
         const { page, offset } = filter;
@@ -30,7 +30,7 @@ export function Suppliers() {
 
     return (
         <Layout>
-            {showForm ?
+            {showForm === 'NEW' || showForm === 'EDIT' ?
                 <>
                     <h2>{showForm === 'NEW' ? 'Nuevo proveedor' : `Editar proveedor #${formData.id}`}</h2>
                     <SupplierForm
@@ -51,10 +51,14 @@ export function Suppliers() {
                         columns={columns}
                         rows={suppliers}
                         setRows={setSuppliers}
-                        actions
                         filter={filter}
                         setFilter={setFilter}
                         totalRows={totalRows}
+                        setFormData={setFormData}
+                        setShowForm={setShowForm}
+                        actions
+                        showEditAction
+                        showDeleteAction
                     />
                 </>
             }

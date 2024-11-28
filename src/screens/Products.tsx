@@ -25,7 +25,7 @@ export function Products() {
         setFilter,
         totalRows
     } = useProducts();
-    const { formData } = productFormData;
+    const { formData, setFormData } = productFormData;
 
     useEffect(() => {
         getCategories();
@@ -39,9 +39,13 @@ export function Products() {
 
     return (
         <Layout>
-            {showForm ?
+            {showForm === 'NEW' || showForm === 'VIEW' || showForm === 'EDIT' ?
                 <>
-                    <h2>{showForm === 'NEW' ? 'Nuevo producto' : `Editar producto #${formData.id}`}</h2>
+                    <h2>
+                        {showForm === 'NEW' ? 'Nuevo producto' :
+                            showForm === 'VIEW' ? formData.sku :
+                                `Editar producto #${formData.id}`}
+                    </h2>
                     <ProductForm
                         productFormData={productFormData}
                         showForm={showForm}
@@ -62,10 +66,15 @@ export function Products() {
                         columns={columns}
                         rows={products}
                         setRows={setProducts}
-                        actions
                         filter={filter}
                         setFilter={setFilter}
                         totalRows={totalRows}
+                        setFormData={setFormData}
+                        setShowForm={setShowForm}
+                        actions
+                        showViewAction
+                        showEditAction
+                        showDeleteAction
                     />
                 </>
             }

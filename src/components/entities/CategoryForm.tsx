@@ -4,20 +4,20 @@ import Form from 'react-bootstrap/Form';
 
 type CategoryFormProps = {
     categoryFormData: any;
-    showForm: 'NEW' | 'EDIT' | null;
-    setShowForm: (value: 'NEW' | 'EDIT' | null) => void;
+    showForm: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null;
+    setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null) => void;
     handleSubmit: (e: any) => void;
 }
 
 export function CategoryForm({ categoryFormData, showForm, setShowForm, handleSubmit }: CategoryFormProps) {
 
-    const { errors, handleChange, reset } = categoryFormData;
+    const { errors, handleChange, reset, formData } = categoryFormData;
 
     return (
         <Form className='mt-4' onChange={handleChange} onSubmit={e => handleSubmit(e)}>
             <Form.Group controlId="name" className={showForm === 'EDIT' ? 'w-75' : 'w-100'}>
                 <Form.Label>Nombre</Form.Label>
-                <Form.Control name='name' />
+                <Form.Control name='name' value={formData.name} />
                 {errors.name?.type === 'required' &&
                     <Form.Text className="text-danger d-block">
                         * El nombre es requerido.
@@ -31,7 +31,7 @@ export function CategoryForm({ categoryFormData, showForm, setShowForm, handleSu
             </Form.Group>
             <Form.Group className="my-3" controlId="description">
                 <Form.Label>Descripción</Form.Label>
-                <Form.Control name='description' />
+                <Form.Control name='description' value={formData.description} />
                 {errors.description?.type === 'maxLength' &&
                     <Form.Text className="text-danger d-block">
                         * La descripción es demasiado larga.

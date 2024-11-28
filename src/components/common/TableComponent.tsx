@@ -7,11 +7,16 @@ import Form from 'react-bootstrap/Form';
 type TableComponentProps = {
     columns: Array<{ id: string, label: string, accessor: any, sortable?: boolean }>;
     rows: Array<{ [key: string]: any }>;
-    setRows: (rows: Array<{ [key: string]: any }>) => void;
+    setRows: any;
     actions?: boolean;
     filter: any;
     setFilter: (value: any) => void;
     totalRows: number;
+    setFormData: (value: any) => void;
+    setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null) => void;
+    showViewAction?: boolean;
+    showEditAction?: boolean;
+    showDeleteAction?: boolean;
 }
 
 export function TableComponent({
@@ -21,7 +26,12 @@ export function TableComponent({
     actions = false,
     filter,
     setFilter,
-    totalRows
+    totalRows,
+    setFormData,
+    setShowForm,
+    showViewAction,
+    showEditAction,
+    showDeleteAction,
 }: TableComponentProps) {
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
@@ -91,9 +101,30 @@ export function TableComponent({
                             <tr key={row.id}>
                                 {actions &&
                                     <td>
-                                        <button type="button" className="btn btn-info btn-sm me-2">Ver</button>
-                                        <button type="button" className="btn btn-warning btn-sm mx-2">Editar</button>
-                                        <button type="button" className="btn btn-danger btn-sm">Eliminar</button>
+                                        {showViewAction &&
+                                            <button type="button" className="btn btn-info btn-sm me-2" onClick={() => {
+                                                setFormData(row);
+                                                setShowForm('VIEW');
+                                            }}>
+                                                Ver
+                                            </button>
+                                        }
+                                        {showEditAction &&
+                                            <button type="button" className="btn btn-warning btn-sm mx-2" onClick={() => {
+                                                setFormData(row);
+                                                setShowForm('EDIT');
+                                            }}>
+                                                Editar
+                                            </button>
+                                        }
+                                        {showDeleteAction &&
+                                            <button type="button" className="btn btn-danger btn-sm" onClick={() => {
+                                                setFormData(row);
+                                                setShowForm('DELETE');
+                                            }}>
+                                                Eliminar
+                                            </button>
+                                        }
                                     </td>
                                 }
                                 {columns.map(col => col.accessor).map((acc, idx) => (

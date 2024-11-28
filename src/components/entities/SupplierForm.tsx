@@ -4,20 +4,20 @@ import Form from 'react-bootstrap/Form';
 
 type SupplierFormProps = {
     supplierFormData: any;
-    showForm: 'NEW' | 'EDIT' | null;
-    setShowForm: (value: 'NEW' | 'EDIT' | null) => void;
+    showForm: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null;
+    setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null) => void;
     handleSubmit: (e: any) => void;
 }
 
 export function SupplierForm({ supplierFormData, showForm, setShowForm, handleSubmit }: SupplierFormProps) {
 
-    const { errors, handleChange, reset } = supplierFormData;
+    const { errors, handleChange, reset, formData } = supplierFormData;
 
     return (
         <Form className='mt-4' onChange={handleChange} onSubmit={e => handleSubmit(e)}>
             <Form.Group controlId="name" className={showForm === 'EDIT' ? 'w-75' : 'w-100'}>
                 <Form.Label>Nombre</Form.Label>
-                <Form.Control name='name' />
+                <Form.Control name='name' value={formData.name} />
                 {errors.name?.type === 'required' &&
                     <Form.Text className="text-danger d-block">
                         * El nombre es requerido.
@@ -31,7 +31,7 @@ export function SupplierForm({ supplierFormData, showForm, setShowForm, handleSu
             </Form.Group>
             <Form.Group className="my-3" controlId="phone">
                 <Form.Label>Teléfono</Form.Label>
-                <Form.Control name='phone' />
+                <Form.Control name='phone' value={formData.phone} />
                 {errors.phone?.type === 'maxLength' &&
                     <Form.Text className="text-danger d-block">
                         * El teléfono es demasiado largo.
@@ -40,7 +40,7 @@ export function SupplierForm({ supplierFormData, showForm, setShowForm, handleSu
             </Form.Group>
             <Form.Group className="mb-3" controlId="email">
                 <Form.Label>Email</Form.Label>
-                <Form.Control name='email' type='email' />
+                <Form.Control name='email' type='email' value={formData.email} />
                 {errors.email?.type === 'maxLength' &&
                     <Form.Text className="text-danger d-block">
                         * El email es demasiado largo.
@@ -49,7 +49,7 @@ export function SupplierForm({ supplierFormData, showForm, setShowForm, handleSu
             </Form.Group>
             <Form.Group className="mb-3" controlId="address">
                 <Form.Label>Dirección</Form.Label>
-                <Form.Control name='address' />
+                <Form.Control name='address' value={formData.address} />
                 {errors.address?.type === 'maxLength' &&
                     <Form.Text className="text-danger d-block">
                         * La dirección es demasiado larga.
@@ -58,7 +58,7 @@ export function SupplierForm({ supplierFormData, showForm, setShowForm, handleSu
             </Form.Group>
             <Form.Group className="mb-3" controlId="city">
                 <Form.Label>Ciudad</Form.Label>
-                <Form.Control name='city' />
+                <Form.Control name='city' value={formData.city} />
                 {errors.city?.type === 'maxLength' &&
                     <Form.Text className="text-danger d-block">
                         * La ciudad es demasiado larga.

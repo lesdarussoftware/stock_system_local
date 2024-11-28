@@ -21,7 +21,7 @@ export function Categories() {
         setFilter,
         totalRows
     } = useCategories();
-    const { formData } = categoryFormData;
+    const { formData, setFormData } = categoryFormData;
 
     useEffect(() => {
         const { page, offset } = filter;
@@ -30,7 +30,7 @@ export function Categories() {
 
     return (
         <Layout>
-            {showForm ?
+            {showForm === 'NEW' || showForm === 'EDIT' ?
                 <>
                     <h2>{showForm === 'NEW' ? 'Nueva categoría' : `Editar categoría #${formData.id}`}</h2>
                     <CategoryForm
@@ -51,10 +51,14 @@ export function Categories() {
                         columns={columns}
                         rows={categories}
                         setRows={setCategories}
-                        actions
                         filter={filter}
                         setFilter={setFilter}
                         totalRows={totalRows}
+                        setFormData={setFormData}
+                        setShowForm={setShowForm}
+                        actions
+                        showEditAction
+                        showDeleteAction
                     />
                 </>
             }
