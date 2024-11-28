@@ -32,9 +32,16 @@ export function useSuppliers() {
 
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [showForm, setShowForm] = useState<'NEW' | 'EDIT' | null>(null);
+    const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
+    const [totalRows, setTotalRows] = useState<number>(0);
 
-    async function getSuppliers() {
-        const data = await db.suppliers.toArray();
+    async function getSuppliers(page: number = 1, offset: number = 50) {
+        const start = (page - 1) * offset;
+        const [data, count] = await Promise.all([
+            db.suppliers.orderBy('id').reverse().offset(start).limit(offset).toArray(),
+            db.suppliers.count()
+        ]);
+        setTotalRows(count);
         setSuppliers(data);
     }
 
@@ -93,6 +100,7 @@ export function useSuppliers() {
         {
             id: 'id',
             label: '#',
+            sortable: true,
             accessor: 'id'
         },
         {
@@ -125,12 +133,16 @@ export function useSuppliers() {
 
     return {
         suppliers,
+        setSuppliers,
         getSuppliers,
         columns,
         supplierFormData,
         showForm,
         setShowForm,
         handleSubmit,
-        deleteSupplier
+        deleteSupplier,
+        filter,
+        setFilter,
+        totalRows
     }
 }

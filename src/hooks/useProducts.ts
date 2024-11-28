@@ -40,17 +40,22 @@ export function useProducts() {
 
     const [products, setProducts] = useState<Product[]>([]);
     const [showForm, setShowForm] = useState<'NEW' | 'EDIT' | null>(null);
+    const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
+    const [totalRows, setTotalRows] = useState<number>(0);
 
-    async function getProducts() {
-        const [data, categories, suppliers] = await Promise.all([
-            db.products.toArray(),
+    async function getProducts(page: number = 1, offset: number = 50) {
+        const start = (page - 1) * offset;
+        const [data, count, categories, suppliers] = await Promise.all([
+            db.products.orderBy('id').reverse().offset(start).limit(offset).toArray(),
+            db.products.count(),
             db.categories.toArray(),
             db.suppliers.toArray()
         ]);
+        setTotalRows(count);
         setProducts(data.filter(p => p.is_active).map(p => ({
             ...p,
-            category: categories.find(c => c.id === +p.category_id)!.name,
-            supplier: suppliers.find(s => s.id === +p.supplier_id)!.name
+            category: categories.find(c => c.id === +p.category_id)?.name || 'Sin categoría',
+            supplier: suppliers.find(s => s.id === +p.supplier_id)?.name || 'Sin proveedor'
         })));
     }
 
@@ -148,11 +153,15 @@ export function useProducts() {
 
     return {
         products,
+        setProducts,
         getProducts,
         columns,
         productFormData,
         showForm,
         setShowForm,
-        handleSubmit
+        handleSubmit,
+        filter,
+        setFilter,
+        totalRows
     }
 }

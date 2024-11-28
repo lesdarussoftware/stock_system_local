@@ -8,12 +8,25 @@ import { SupplierForm } from "../components/entities/SupplierForm";
 
 export function Suppliers() {
 
-    const { suppliers, getSuppliers, columns, showForm, setShowForm, supplierFormData, handleSubmit } = useSuppliers();
+    const {
+        suppliers,
+        setSuppliers,
+        getSuppliers,
+        columns,
+        showForm,
+        setShowForm,
+        supplierFormData,
+        handleSubmit,
+        filter,
+        setFilter,
+        totalRows
+    } = useSuppliers();
     const { formData } = supplierFormData;
 
     useEffect(() => {
-        getSuppliers();
-    }, []);
+        const { page, offset } = filter;
+        getSuppliers(page, offset);
+    }, [filter]);
 
     return (
         <Layout>
@@ -37,7 +50,11 @@ export function Suppliers() {
                     <TableComponent
                         columns={columns}
                         rows={suppliers}
+                        setRows={setSuppliers}
                         actions
+                        filter={filter}
+                        setFilter={setFilter}
+                        totalRows={totalRows}
                     />
                 </>
             }

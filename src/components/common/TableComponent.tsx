@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import Pagination from 'react-bootstrap/Pagination';
 import Form from 'react-bootstrap/Form';
@@ -7,32 +7,45 @@ import Form from 'react-bootstrap/Form';
 type TableComponentProps = {
     columns: Array<{ id: string, label: string, accessor: any, sortable?: boolean }>;
     rows: Array<{ [key: string]: any }>;
+    setRows: (rows: Array<{ [key: string]: any }>) => void;
     actions?: boolean;
+    filter: any;
+    setFilter: (value: any) => void;
+    totalRows: number;
 }
 
-export function TableComponent({ columns, rows, actions = false }: TableComponentProps) {
-    
-    const [currentPage, setCurrentPage] = useState(1);
-    const [rowsPerPage, setRowsPerPage] = useState(50); // Por defecto, 50 registros por página
+export function TableComponent({
+    columns,
+    rows,
+    setRows,
+    actions = false,
+    filter,
+    setFilter,
+    totalRows
+}: TableComponentProps) {
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
-    // Calcula las filas ordenadas
-    const sortedRows = sortConfig ? [...rows].sort((a, b) => {
-        const { key, direction } = sortConfig;
-        const compare = a[key] > b[key] ? 1 : a[key] < b[key] ? -1 : 0;
-        return direction === 'asc' ? compare : -compare;
-    }) : rows;
+    const totalPages = Math.ceil(totalRows / filter.offset);
 
-    // Paginación
-    const offset = (currentPage - 1) * rowsPerPage;
-    const paginatedRows = sortedRows.slice(offset, offset + rowsPerPage);
+    // Efecto para ordenar las filas cada vez que cambia sortConfig
+    useEffect(() => {
+        if (!sortConfig) return;
 
-    const totalPages = Math.ceil(rows.length / rowsPerPage);
+        const sortedRows = [...rows].sort((a, b) => {
+            const aValue = a[sortConfig.key];
+            const bValue = b[sortConfig.key];
+
+            if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+            if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+        setRows(sortedRows);
+    }, [sortConfig]);
 
     const handleSort = (columnId: string) => {
         setSortConfig((prev) => {
             if (prev?.key === columnId) {
-                // Cambia la dirección de orden si es la misma columna
                 return { key: columnId, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
             }
             return { key: columnId, direction: 'asc' };
@@ -40,8 +53,11 @@ export function TableComponent({ columns, rows, actions = false }: TableComponen
     };
 
     const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setRowsPerPage(Number(event.target.value));
-        setCurrentPage(1); // Reiniciar a la primera página al cambiar la cantidad
+        setFilter({
+            ...filter,
+            offset: Number(event.target.value),
+            page: 1
+        });
     };
 
     return (
@@ -65,13 +81,13 @@ export function TableComponent({ columns, rows, actions = false }: TableComponen
                     </tr>
                 </thead>
                 <tbody>
-                    {paginatedRows.length === 0 ?
+                    {rows.length === 0 ?
                         <tr>
                             <td colSpan={columns.length + (actions ? 1 : 0)} className='text-center'>
                                 No hay registros para mostrar.
                             </td>
                         </tr> :
-                        paginatedRows.map(row => (
+                        rows.map(row => (
                             <tr key={row.id}>
                                 {actions &&
                                     <td>
@@ -93,7 +109,7 @@ export function TableComponent({ columns, rows, actions = false }: TableComponen
             <div className='d-flex align-items-center justify-content-end gap-4'>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <Form.Group controlId="rowsPerPageSelect" className='d-flex gap-2 align-items-center'>
-                        <Form.Select value={rowsPerPage} onChange={handleRowsPerPageChange}>
+                        <Form.Select value={filter.offset} onChange={handleRowsPerPageChange}>
                             <option value={10}>10</option>
                             <option value={25}>25</option>
                             <option value={50}>50</option>
@@ -102,19 +118,19 @@ export function TableComponent({ columns, rows, actions = false }: TableComponen
                     </Form.Group>
                 </div>
                 <Pagination>
-                    <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
-                    <Pagination.Prev onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} />
+                    <Pagination.First onClick={() => setFilter({ ...filter, page: 1 })} disabled={filter.page === 1} />
+                    <Pagination.Prev onClick={() => setFilter((p: any) => ({ ...p, page: Math.max(1, p - 1) }))} disabled={filter.page === 1} />
                     {[...Array(totalPages)].map((_, idx) => (
                         <Pagination.Item
                             key={idx + 1}
-                            active={currentPage === idx + 1}
-                            onClick={() => setCurrentPage(idx + 1)}
+                            active={filter.page === idx + 1}
+                            onClick={() => setFilter({ ...filter, page: idx + 1 })}
                         >
                             {idx + 1}
                         </Pagination.Item>
                     ))}
-                    <Pagination.Next onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} />
-                    <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
+                    <Pagination.Next onClick={() => setFilter((p: any) => ({ ...p, page: Math.min(totalPages, p + 1) }))} disabled={filter.page === totalPages} />
+                    <Pagination.Last onClick={() => setFilter({ ...filter, page: totalPages })} disabled={filter.page === totalPages} />
                 </Pagination>
             </div>
         </>

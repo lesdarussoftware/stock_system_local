@@ -8,12 +8,25 @@ import { CategoryForm } from "../components/entities/CategoryForm";
 
 export function Categories() {
 
-    const { categories, getCategories, columns, showForm, setShowForm, categoryFormData, handleSubmit } = useCategories();
+    const {
+        categories,
+        setCategories,
+        getCategories,
+        columns,
+        showForm,
+        setShowForm,
+        categoryFormData,
+        handleSubmit,
+        filter,
+        setFilter,
+        totalRows
+    } = useCategories();
     const { formData } = categoryFormData;
 
     useEffect(() => {
-        getCategories();
-    }, []);
+        const { page, offset } = filter;
+        getCategories(page, offset);
+    }, [filter]);
 
     return (
         <Layout>
@@ -37,7 +50,11 @@ export function Categories() {
                     <TableComponent
                         columns={columns}
                         rows={categories}
+                        setRows={setCategories}
                         actions
+                        filter={filter}
+                        setFilter={setFilter}
+                        totalRows={totalRows}
                     />
                 </>
             }

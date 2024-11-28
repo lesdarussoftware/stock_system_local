@@ -12,14 +12,30 @@ export function Products() {
 
     const { categories, getCategories } = useCategories();
     const { suppliers, getSuppliers } = useSuppliers();
-    const { products, getProducts, columns, showForm, setShowForm, productFormData, handleSubmit } = useProducts();
+    const {
+        products,
+        setProducts,
+        getProducts,
+        columns,
+        showForm,
+        setShowForm,
+        productFormData,
+        handleSubmit,
+        filter,
+        setFilter,
+        totalRows
+    } = useProducts();
     const { formData } = productFormData;
 
     useEffect(() => {
         getCategories();
         getSuppliers();
-        getProducts();
     }, []);
+
+    useEffect(() => {
+        const { page, offset } = filter;
+        getProducts(page, offset);
+    }, [filter]);
 
     return (
         <Layout>
@@ -45,7 +61,11 @@ export function Products() {
                     <TableComponent
                         columns={columns}
                         rows={products}
+                        setRows={setProducts}
                         actions
+                        filter={filter}
+                        setFilter={setFilter}
+                        totalRows={totalRows}
                     />
                 </>
             }

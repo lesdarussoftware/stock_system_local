@@ -19,9 +19,16 @@ export function useCategories() {
 
     const [categories, setCategories] = useState<Category[]>([]);
     const [showForm, setShowForm] = useState<'NEW' | 'EDIT' | null>(null);
+    const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
+    const [totalRows, setTotalRows] = useState<number>(0);
 
-    async function getCategories() {
-        const data = await db.categories.toArray();
+    async function getCategories(page: number = 1, offset: number = 50) {
+        const start = (page - 1) * offset;
+        const [data, count] = await Promise.all([
+            db.categories.orderBy('id').reverse().offset(start).limit(offset).toArray(),
+            db.categories.count()
+        ]);
+        setTotalRows(count);
         setCategories(data);
     }
 
@@ -80,6 +87,7 @@ export function useCategories() {
         {
             id: 'id',
             label: '#',
+            sortable: true,
             accessor: 'id'
         },
         {
@@ -97,12 +105,16 @@ export function useCategories() {
 
     return {
         categories,
+        setCategories,
         getCategories,
         columns,
         categoryFormData,
         showForm,
         setShowForm,
         handleSubmit,
-        deleteCategory
+        deleteCategory,
+        filter,
+        setFilter,
+        totalRows
     }
 }
