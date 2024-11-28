@@ -19,14 +19,14 @@ export function useStores() {
             phone: '',
             email: '',
             address: '',
-            lat: '',
-            lng: ''
+            city: ''
         },
         rules: {
             name: { required: true, maxLength: 55 },
             phone: { maxLength: 55 },
             email: { maxLength: 55 },
-            address: { maxLength: 55 }
+            address: { maxLength: 55 },
+            city: { maxLength: 55 }
         }
     });
 
@@ -130,6 +130,11 @@ export function useStores() {
             id: 'address',
             label: 'Dirección',
             accessor: 'address'
+        },
+        {
+            id: 'city',
+            label: 'Ciudad',
+            accessor: 'city'
         }
     ], [])
 

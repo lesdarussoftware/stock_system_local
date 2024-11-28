@@ -55,6 +55,15 @@ export function StoreForm({ storeFormData, setShowForm, handleSubmit }: StoreFor
                     </Form.Text>
                 }
             </Form.Group>
+            <Form.Group className="mb-3" controlId="city">
+                <Form.Label>Ciudad</Form.Label>
+                <Form.Control name='city' value={formData.city} />
+                {errors.city?.type === 'maxLength' &&
+                    <Form.Text className="text-danger d-block">
+                        * La ciudad es demasiado larga.
+                    </Form.Text>
+                }
+            </Form.Group>
             <div className='mt-5 d-flex justify-content-center gap-3'>
                 <Button variant="secondary" type="button" className='w-25' onClick={() => {
                     setShowForm(null);

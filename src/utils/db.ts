@@ -33,8 +33,7 @@ interface Store {
     phone?: string;
     email?: string;
     address?: string;
-    lat?: string;
-    lng?: string;
+    city?: string;
     created_at: Date;
     updated_at: Date;
 }
@@ -140,7 +139,7 @@ db.version(1).stores({
     users: '++id, username, password, created_at, updated_at',
     categories: '++id, name, description, created_at, updated_at',
     suppliers: '++id, name, phone, email, address, city, created_at, updated_at',
-    stores: '++id, name, phone, email, address, lat, lng, created_at, updated_at',
+    stores: '++id, name, phone, email, address, city, created_at, updated_at',
     products: '++id, name, sku, bar_code, buy_price, earn, sale_price, min_stock, is_active, category_id, supplier_id, store_id, created_at, updated_at',
     movements: '++id, product_id, amount, date, type, user_id, created_at, updated_at',
     clients: '++id, name, phone, email, address, city, created_at, updated_at',
