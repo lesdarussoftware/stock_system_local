@@ -19,7 +19,9 @@ export function Layout({ children }: LayoutProps) {
                             </button>
                         </li>
                         <li>
-                            <button className="btn btn-secondary">Clientes</button>
+                            <button className="btn btn-secondary" onClick={() => navigate('/clients')}>
+                                Clientes
+                            </button>
                         </li>
                         <li>
                             <button className="btn btn-secondary">Ventas</button>
