@@ -39,7 +39,6 @@ export function Categories() {
                     <h2>{showForm === 'NEW' ? 'Nueva categoría' : `Editar categoría #${formData.id}`}</h2>
                     <CategoryForm
                         categoryFormData={categoryFormData}
-                        showForm={showForm}
                         setShowForm={setShowForm}
                         handleSubmit={handleSubmit}
                     />

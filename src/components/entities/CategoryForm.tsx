@@ -4,18 +4,17 @@ import Form from 'react-bootstrap/Form';
 
 type CategoryFormProps = {
     categoryFormData: any;
-    showForm: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null;
     setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null) => void;
     handleSubmit: (e: any) => void;
 }
 
-export function CategoryForm({ categoryFormData, showForm, setShowForm, handleSubmit }: CategoryFormProps) {
+export function CategoryForm({ categoryFormData, setShowForm, handleSubmit }: CategoryFormProps) {
 
     const { errors, handleChange, reset, formData } = categoryFormData;
 
     return (
         <Form className='mt-4' onChange={handleChange} onSubmit={e => handleSubmit(e)}>
-            <Form.Group controlId="name" className={showForm === 'EDIT' ? 'w-75' : 'w-100'}>
+            <Form.Group controlId="name">
                 <Form.Label>Nombre</Form.Label>
                 <Form.Control name='name' value={formData.name} />
                 {errors.name?.type === 'required' &&

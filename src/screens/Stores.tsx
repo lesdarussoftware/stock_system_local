@@ -39,7 +39,6 @@ export function Stores() {
                     <h2>{showForm === 'NEW' ? 'Nuevo depósito' : `Editar depósito #${formData.id}`}</h2>
                     <StoreForm
                         storeFormData={storeFormData}
-                        showForm={showForm}
                         setShowForm={setShowForm}
                         handleSubmit={handleSubmit}
                     />

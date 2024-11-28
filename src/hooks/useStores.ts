@@ -28,7 +28,7 @@ export function useStores() {
             email: { maxLength: 55 },
             address: { maxLength: 55 }
         }
-    })
+    });
 
     const [stores, setStores] = useState<Store[]>([]);
     const [showForm, setShowForm] = useState<'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null>(null);

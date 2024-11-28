@@ -39,7 +39,6 @@ export function Suppliers() {
                     <h2>{showForm === 'NEW' ? 'Nuevo proveedor' : `Editar proveedor #${formData.id}`}</h2>
                     <SupplierForm
                         supplierFormData={supplierFormData}
-                        showForm={showForm}
                         setShowForm={setShowForm}
                         handleSubmit={handleSubmit}
                     />

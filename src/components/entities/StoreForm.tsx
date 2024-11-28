@@ -4,18 +4,17 @@ import Form from 'react-bootstrap/Form';
 
 type StoreFormProps = {
     storeFormData: any;
-    showForm: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null;
     setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null) => void;
     handleSubmit: (e: any) => void;
 }
 
-export function StoreForm({ storeFormData, showForm, setShowForm, handleSubmit }: StoreFormProps) {
+export function StoreForm({ storeFormData, setShowForm, handleSubmit }: StoreFormProps) {
 
     const { errors, handleChange, reset, formData } = storeFormData;
 
     return (
         <Form className='mt-4' onChange={handleChange} onSubmit={e => handleSubmit(e)}>
-            <Form.Group controlId="name" className={showForm === 'EDIT' ? 'w-75' : 'w-100'}>
+            <Form.Group controlId="name">
                 <Form.Label>Nombre</Form.Label>
                 <Form.Control name='name' value={formData.name} />
                 {errors.name?.type === 'required' &&

@@ -39,7 +39,6 @@ export function Clients() {
                     <h2>{showForm === 'NEW' ? 'Nuevo cliente' : `Editar cliente #${formData.id}`}</h2>
                     <ClientForm
                         clientFormData={clientFormData}
-                        showForm={showForm}
                         setShowForm={setShowForm}
                         handleSubmit={handleSubmit}
                     />
