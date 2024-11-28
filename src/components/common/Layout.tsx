@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
+import { useUsers } from "../../hooks/useUsers";
+
 type LayoutProps = {
     children: React.ReactNode;
 }
@@ -8,13 +10,15 @@ export function Layout({ children }: LayoutProps) {
 
     const navigate = useNavigate();
 
+    const { logout } = useUsers();
+
     return (
         <div>
             <header>
                 <nav>
                     <ul className="d-flex p-3 justify-content-end list-unstyled gap-4">
                         <li>
-                            <button className="btn btn-secondary" onClick={() => navigate('/')}>
+                            <button className="btn btn-secondary" onClick={() => navigate('/products')}>
                                 Productos
                             </button>
                         </li>
@@ -50,7 +54,9 @@ export function Layout({ children }: LayoutProps) {
                             </button>
                         </li>
                         <li>
-                            <button className="btn btn-secondary">Salir</button>
+                            <button className="btn btn-secondary" onClick={logout}>
+                                Salir
+                            </button>
                         </li>
                     </ul>
                 </nav>

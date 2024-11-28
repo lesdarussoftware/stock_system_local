@@ -32,7 +32,8 @@ export function useUsers() {
     const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
     const [totalRows, setTotalRows] = useState<number>(0);
 
-    async function login() {
+    async function login(e: any) {
+        e.preventDefault();
         const { formData, validate } = userFormData;
         if (validate()) {
             try {

@@ -6,15 +6,16 @@ type UserFormProps = {
     userFormData: any;
     setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null) => void;
     handleSubmit: (e: any) => void;
+    forAuth?: boolean;
 }
 
-export function UserForm({ userFormData, setShowForm, handleSubmit }: UserFormProps) {
+export function UserForm({ userFormData, setShowForm, handleSubmit, forAuth }: UserFormProps) {
 
     const { errors, handleChange, reset, formData } = userFormData;
 
     return (
         <Form className='mt-4' onChange={handleChange} onSubmit={e => handleSubmit(e)}>
-            <Form.Group controlId="username">
+            <Form.Group controlId="username" className='mb-3'>
                 <Form.Label>Nombre de usuario</Form.Label>
                 <Form.Control name='username' value={formData.username} />
                 {errors.username?.type === 'required' &&
@@ -47,17 +48,24 @@ export function UserForm({ userFormData, setShowForm, handleSubmit }: UserFormPr
                     </Form.Text>
                 }
             </Form.Group>
-            <div className='mt-5 d-flex justify-content-center gap-3'>
-                <Button variant="secondary" type="button" className='w-25' onClick={() => {
-                    setShowForm(null);
-                    reset();
-                }}>
-                    Cancelar
-                </Button>
-                <Button variant="primary" type="submit" className='w-25'>
-                    Guardar
-                </Button>
-            </div>
+            {forAuth ?
+                <div className='mt-5 d-flex justify-content-center'>
+                    <Button variant="primary" type="submit" className='w-75'>
+                        Entrar
+                    </Button>
+                </div> :
+                <div className='mt-5 d-flex justify-content-center gap-3'>
+                    <Button variant="secondary" type="button" className='w-25' onClick={() => {
+                        setShowForm(null);
+                        reset();
+                    }}>
+                        Cancelar
+                    </Button>
+                    <Button variant="primary" type="submit" className='w-25'>
+                        Guardar
+                    </Button>
+                </div>
+            }
         </Form>
     );
 }
