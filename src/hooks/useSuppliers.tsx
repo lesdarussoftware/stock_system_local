@@ -55,14 +55,15 @@ export function useSuppliers() {
                     if (showForm === 'NEW') {
                         await db.suppliers.add({ ...formData, id: undefined });
                         setBodyMessage('Proveedor guardado correctamente.');
+                        getSuppliers();
                     } else if (showForm === 'EDIT') {
                         await db.suppliers.update(formData.id, formData);
                         setBodyMessage('Proveedor editado correctamente.');
+                        getSuppliers(filter.page, filter.offset);
                     }
                     setSeverity('SUCCESS');
                     setShowForm(null);
                     reset();
-                    getSuppliers();
                 } else {
                     setSeverity('ERROR');
                     setBodyMessage('Ese proveedor ya existe.');
@@ -83,7 +84,7 @@ export function useSuppliers() {
                 await db.suppliers.delete(+supplierFormData.formData.id);
                 setBodyMessage('Proveedor eliminado correctamente.');
                 setSeverity('SUCCESS');
-                getSuppliers();
+                getSuppliers(filter.page, filter.offset);
             } else {
                 setSeverity('ERROR');
                 setBodyMessage('Este proveedor tiene productos asociados.');

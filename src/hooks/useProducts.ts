@@ -69,14 +69,15 @@ export function useProducts() {
                     if (showForm === 'NEW') {
                         await db.products.add({ ...formData, id: undefined });
                         setBodyMessage('Producto guardado correctamente.');
+                        getProducts();
                     } else if (showForm === 'EDIT') {
                         await db.products.update(formData.id, formData);
                         setBodyMessage('Producto editado correctamente.');
+                        getProducts(filter.page, filter.offset);
                     }
                     setSeverity('SUCCESS');
                     setShowForm(null);
                     reset();
-                    getProducts();
                 } else {
                     setSeverity('ERROR');
                     setBodyMessage(`El sku ${formData.sku} ya existe.`);
@@ -95,7 +96,7 @@ export function useProducts() {
             await db.products.delete(+productFormData.formData.id);
             setBodyMessage('Producto eliminado correctamente.');
             setSeverity('SUCCESS');
-            getProducts();
+            getProducts(filter.page, filter.offset);
         } catch (e) {
             setSeverity('ERROR');
             setBodyMessage('Hubo un error al intentar eliminar el proveedor.');

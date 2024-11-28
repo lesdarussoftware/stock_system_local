@@ -42,14 +42,15 @@ export function useCategories() {
                     if (showForm === 'NEW') {
                         await db.categories.add({ ...formData, id: undefined });
                         setBodyMessage('Categoría guardada correctamente.');
+                        getCategories();
                     } else if (showForm === 'EDIT') {
                         await db.categories.update(formData.id, formData);
                         setBodyMessage('Categoría editada correctamente.');
+                        getCategories(filter.page, filter.offset);
                     }
                     setSeverity('SUCCESS');
                     setShowForm(null);
                     reset();
-                    getCategories();
                 } else {
                     setSeverity('ERROR');
                     setBodyMessage('Esa categoría ya existe.');
@@ -70,7 +71,7 @@ export function useCategories() {
                 await db.categories.delete(+categoryFormData.formData.id);
                 setBodyMessage('Categoría eliminada correctamente.');
                 setSeverity('SUCCESS');
-                getCategories();
+                getCategories(filter.page, filter.offset);
             } else {
                 setSeverity('ERROR');
                 setBodyMessage('Esta categoría tiene productos asociados.');
