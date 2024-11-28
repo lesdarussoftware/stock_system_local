@@ -63,11 +63,11 @@ export function useCategories() {
         }
     }
 
-    async function deleteCategory(formData: Category) {
+    async function deleteCategory() {
         try {
-            const isValid = await categoryHasNotChildren(formData.id);
+            const isValid = await categoryHasNotChildren(categoryFormData.formData.id);
             if (isValid) {
-                await db.categories.delete(+formData.id);
+                await db.categories.delete(+categoryFormData.formData.id);
                 setBodyMessage('Categoría eliminada correctamente.');
                 setSeverity('SUCCESS');
                 getCategories();
@@ -79,8 +79,14 @@ export function useCategories() {
             setSeverity('ERROR');
             setBodyMessage('Hubo un error al intentar eliminar la categoría.');
         }
-        setHeaderMessage(formData.name);
+        handleClose();
+        setHeaderMessage(categoryFormData.formData.name);
         setOpenMessage(true);
+    }
+
+    function handleClose() {
+        categoryFormData.reset();
+        setShowForm(null);
     }
 
     const columns = useMemo(() => [
@@ -115,6 +121,7 @@ export function useCategories() {
         deleteCategory,
         filter,
         setFilter,
-        totalRows
+        totalRows,
+        handleClose
     }
 }

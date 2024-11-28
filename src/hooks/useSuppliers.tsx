@@ -76,11 +76,11 @@ export function useSuppliers() {
         }
     }
 
-    async function deleteSupplier(formData: Supplier) {
+    async function deleteSupplier() {
         try {
-            const isValid = await supplierHasNotProducts(formData.id);
+            const isValid = await supplierHasNotProducts(supplierFormData.formData.id);
             if (isValid) {
-                await db.suppliers.delete(+formData.id);
+                await db.suppliers.delete(+supplierFormData.formData.id);
                 setBodyMessage('Proveedor eliminado correctamente.');
                 setSeverity('SUCCESS');
                 getSuppliers();
@@ -92,8 +92,14 @@ export function useSuppliers() {
             setSeverity('ERROR');
             setBodyMessage('Hubo un error al intentar eliminar el proveedor.');
         }
-        setHeaderMessage(formData.name);
+        handleClose();
+        setHeaderMessage(supplierFormData.formData.name);
         setOpenMessage(true);
+    }
+
+    function handleClose() {
+        supplierFormData.reset();
+        setShowForm(null);
     }
 
     const columns = useMemo(() => [
@@ -143,6 +149,7 @@ export function useSuppliers() {
         deleteSupplier,
         filter,
         setFilter,
-        totalRows
+        totalRows,
+        handleClose
     }
 }

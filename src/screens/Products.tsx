@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 import { useProducts } from "../hooks/useProducts";
 import { useCategories } from "../hooks/useCategories";
@@ -23,7 +25,9 @@ export function Products() {
         handleSubmit,
         filter,
         setFilter,
-        totalRows
+        totalRows,
+        handleClose,
+        deleteProduct
     } = useProducts();
     const { formData, setFormData } = productFormData;
 
@@ -76,6 +80,20 @@ export function Products() {
                         showEditAction
                         showDeleteAction
                     />
+                    <Modal show={showForm === 'DELETE'} onHide={handleClose} backdrop="static" keyboard={false}        >
+                        <Modal.Header closeButton>
+                            <Modal.Title>{`Borrar producto ${formData.sku}`}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            Los datos no podrán ser recuperados.
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose}>
+                                Cancelar
+                            </Button>
+                            <Button variant="danger" onClick={deleteProduct}>Confirmar</Button>
+                        </Modal.Footer>
+                    </Modal>
                 </>
             }
         </Layout>

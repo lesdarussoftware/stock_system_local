@@ -90,6 +90,26 @@ export function useProducts() {
         }
     }
 
+    async function deleteProduct() {
+        try {
+            await db.products.delete(+productFormData.formData.id);
+            setBodyMessage('Producto eliminado correctamente.');
+            setSeverity('SUCCESS');
+            getProducts();
+        } catch (e) {
+            setSeverity('ERROR');
+            setBodyMessage('Hubo un error al intentar eliminar el proveedor.');
+        }
+        handleClose();
+        setHeaderMessage(productFormData.formData.name);
+        setOpenMessage(true);
+    }
+
+    function handleClose() {
+        productFormData.reset();
+        setShowForm(null);
+    }
+
     const columns = useMemo(() => [
         {
             id: 'id',
@@ -162,6 +182,8 @@ export function useProducts() {
         handleSubmit,
         filter,
         setFilter,
-        totalRows
+        totalRows,
+        handleClose,
+        deleteProduct
     }
 }

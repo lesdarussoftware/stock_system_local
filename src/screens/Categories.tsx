@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 import { useCategories } from "../hooks/useCategories";
 
@@ -19,7 +21,9 @@ export function Categories() {
         handleSubmit,
         filter,
         setFilter,
-        totalRows
+        totalRows,
+        handleClose,
+        deleteCategory
     } = useCategories();
     const { formData, setFormData } = categoryFormData;
 
@@ -60,6 +64,20 @@ export function Categories() {
                         showEditAction
                         showDeleteAction
                     />
+                    <Modal show={showForm === 'DELETE'} onHide={handleClose} backdrop="static" keyboard={false}        >
+                        <Modal.Header closeButton>
+                            <Modal.Title>{`Borrar categoría ${formData.name}`}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            Los datos no podrán ser recuperados.
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose}>
+                                Cancelar
+                            </Button>
+                            <Button variant="danger" onClick={deleteCategory}>Confirmar</Button>
+                        </Modal.Footer>
+                    </Modal>
                 </>
             }
         </Layout>
