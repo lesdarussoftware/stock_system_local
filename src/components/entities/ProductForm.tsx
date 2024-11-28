@@ -2,7 +2,7 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-import { Category, Supplier } from '../../utils/db';
+import { Category, Store, Supplier } from '../../utils/db';
 
 type ProductFormProps = {
     productFormData: any;
@@ -11,6 +11,7 @@ type ProductFormProps = {
     handleSubmit: (e: any) => void;
     categories: Category[];
     suppliers: Supplier[];
+    stores: Store[];
 }
 
 export function ProductForm({
@@ -19,7 +20,8 @@ export function ProductForm({
     setShowForm,
     handleSubmit,
     categories,
-    suppliers
+    suppliers,
+    stores
 }: ProductFormProps) {
 
     const { errors, handleChange, reset, formData } = productFormData;
@@ -128,9 +130,7 @@ export function ProductForm({
                     <Form.Label>Depósito</Form.Label>
                     <Form.Select name='store_id' value={formData.store_id} disabled={showForm === 'VIEW'}>
                         <option value="">Seleccione</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        {stores.map((s: Store) => <option key={s.id} value={s.id}>{s.name}</option>)}
                     </Form.Select>
                 </Form.Group>
             </div>

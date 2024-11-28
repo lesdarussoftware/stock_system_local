@@ -40,7 +40,9 @@ export function Layout({ children }: LayoutProps) {
                             </button>
                         </li>
                         <li>
-                            <button className="btn btn-secondary">Depósitos</button>
+                            <button className="btn btn-secondary" onClick={() => navigate('/stores')}>
+                                Depósitos
+                            </button>
                         </li>
                         <li>
                             <button className="btn btn-secondary">Salir</button>

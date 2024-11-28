@@ -6,6 +6,7 @@ import { Products } from './screens/Products'
 import { Clients } from './screens/Clients'
 import { Categories } from './screens/Categories'
 import { Suppliers } from './screens/Suppliers'
+import { Stores } from './screens/Stores'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path='/clients' element={<Clients />} />
           <Route path='/categories' element={<Categories />} />
           <Route path='/suppliers' element={<Suppliers />} />
+          <Route path='/stores' element={<Stores />} />
         </Routes>
       </HashRouter>
     </MessageProvider>

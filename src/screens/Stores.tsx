@@ -2,91 +2,71 @@ import { useEffect } from "react";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
-import { useProducts } from "../hooks/useProducts";
-import { useCategories } from "../hooks/useCategories";
-import { useSuppliers } from "../hooks/useSuppliers";
 import { useStores } from "../hooks/useStores";
 
 import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
-import { ProductForm } from "../components/entities/ProductForm";
+import { StoreForm } from "../components/entities/StoreForm";
 
-export function Products() {
+export function Stores() {
 
-    const { categories, getCategories } = useCategories();
-    const { suppliers, getSuppliers } = useSuppliers();
-    const { stores, getStores } = useStores();
     const {
-        products,
-        setProducts,
-        getProducts,
+        stores,
+        setStores,
+        getStores,
         columns,
         showForm,
         setShowForm,
-        productFormData,
+        storeFormData,
         handleSubmit,
         filter,
         setFilter,
         totalRows,
         handleClose,
-        deleteProduct
-    } = useProducts();
-    const { formData, setFormData } = productFormData;
-
-    useEffect(() => {
-        getCategories();
-        getSuppliers();
-        getStores();
-    }, []);
+        deleteStore
+    } = useStores();
+    const { formData, setFormData } = storeFormData;
 
     useEffect(() => {
         const { page, offset } = filter;
-        getProducts(page, offset);
+        getStores(page, offset);
     }, [filter]);
 
     return (
         <Layout>
-            {showForm === 'NEW' || showForm === 'VIEW' || showForm === 'EDIT' ?
+            {showForm === 'NEW' || showForm === 'EDIT' ?
                 <>
-                    <h2>
-                        {showForm === 'NEW' ? 'Nuevo producto' :
-                            showForm === 'VIEW' ? formData.sku :
-                                `Editar producto #${formData.id}`}
-                    </h2>
-                    <ProductForm
-                        productFormData={productFormData}
+                    <h2>{showForm === 'NEW' ? 'Nuevo depósito' : `Editar depósito #${formData.id}`}</h2>
+                    <StoreForm
+                        storeFormData={storeFormData}
                         showForm={showForm}
                         setShowForm={setShowForm}
                         handleSubmit={handleSubmit}
-                        categories={categories}
-                        suppliers={suppliers}
-                        stores={stores}
                     />
                 </> :
                 <>
                     <div className="d-flex justify-content-between align-items-center mb-2">
-                        <h2>Productos</h2>
+                        <h2>Depósitos</h2>
                         <button className="btn btn-primary" onClick={() => setShowForm('NEW')}>
                             Nuevo
                         </button>
                     </div>
                     <TableComponent
                         columns={columns}
-                        rows={products}
-                        setRows={setProducts}
+                        rows={stores}
+                        setRows={setStores}
                         filter={filter}
                         setFilter={setFilter}
                         totalRows={totalRows}
                         setFormData={setFormData}
                         setShowForm={setShowForm}
                         actions
-                        showViewAction
                         showEditAction
                         showDeleteAction
                     />
                     <Modal show={showForm === 'DELETE'} onHide={handleClose} backdrop="static" keyboard={false}        >
                         <Modal.Header closeButton>
-                            <Modal.Title>{`Borrar producto ${formData.sku}`}</Modal.Title>
+                            <Modal.Title>{`Borrar depósito ${formData.name}`}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             Los datos no podrán ser recuperados.
@@ -95,7 +75,7 @@ export function Products() {
                             <Button variant="secondary" onClick={handleClose}>
                                 Cancelar
                             </Button>
-                            <Button variant="danger" onClick={deleteProduct}>Confirmar</Button>
+                            <Button variant="danger" onClick={deleteStore}>Confirmar</Button>
                         </Modal.Footer>
                     </Modal>
                 </>
