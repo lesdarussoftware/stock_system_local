@@ -4,34 +4,34 @@ import Form from 'react-bootstrap/Form';
 import { format } from 'date-fns';
 
 import { ShowFormType } from '../../utils/types';
-import { Client } from '../../utils/db';
+import { Supplier } from '../../utils/db';
 
-type SaleFormProps = {
-    saleFormData: any;
+type PurchaseFormProps = {
+    purchaseFormData: any;
     setShowForm: (value: ShowFormType) => void;
     handleSubmit: (e: any) => void
-    clients: Client[];
+    suppliers: Supplier[];
 }
 
-export function SaleForm({ saleFormData, setShowForm, handleSubmit, clients }: SaleFormProps) {
+export function PurchaseForm({ purchaseFormData, setShowForm, handleSubmit, suppliers }: PurchaseFormProps) {
 
-    const { errors, handleChange, reset, formData } = saleFormData;
+    const { errors, handleChange, reset, formData } = purchaseFormData;
 
     return (
         <Form className='mt-4' onSubmit={e => handleSubmit(e)}>
-            <Form.Group controlId="client_id">
-                <Form.Label>Cliente</Form.Label>
+            <Form.Group controlId="supplier_id">
+                <Form.Label>Proveedor</Form.Label>
                 <Form.Select
-                    name='client_id'
-                    value={formData.client_id}
-                    onChange={e => handleChange({ target: { name: 'client_id', value: e.target.value } })}
+                    name='supplier_id'
+                    value={formData.supplier_id}
+                    onChange={e => handleChange({ target: { name: 'supplier_id', value: e.target.value } })}
                 >
                     <option value="">Seleccione</option>
-                    {clients.map((c: Client) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    {suppliers.map((s: Supplier) => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </Form.Select>
-                {errors.client_id?.type === 'required' &&
+                {errors.supplier_id?.type === 'required' &&
                     <Form.Text className="text-danger d-block">
-                        * El cliente es requerido.
+                        * El proveedor es requerido.
                     </Form.Text>
                 }
             </Form.Group>

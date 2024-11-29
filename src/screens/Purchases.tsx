@@ -3,9 +3,11 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
 import { usePurchases } from "../hooks/usePurchases";
+import { useSuppliers } from "../hooks/useSuppliers";
 
 import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
+import { PurchaseForm } from "../components/entities/PurchaseForm";
 
 export function Purchases() {
 
@@ -17,7 +19,7 @@ export function Purchases() {
         showForm,
         setShowForm,
         purchaseFormData,
-        // handleSubmit,
+        handleSubmit,
         filter,
         setFilter,
         totalRows,
@@ -25,6 +27,11 @@ export function Purchases() {
         deletePurchase
     } = usePurchases();
     const { formData, setFormData } = purchaseFormData;
+    const { suppliers, getSuppliers } = useSuppliers();
+
+    useEffect(() => {
+        getSuppliers();
+    }, [])
 
     useEffect(() => {
         const { page, offset } = filter;
@@ -36,7 +43,12 @@ export function Purchases() {
             {showForm === 'NEW' || showForm === 'EDIT' ?
                 <>
                     <h2>{showForm === 'NEW' ? 'Nueva compra' : `Editar compra #${formData.id}`}</h2>
-
+                    <PurchaseForm
+                        purchaseFormData={purchaseFormData}
+                        setShowForm={setShowForm}
+                        handleSubmit={handleSubmit}
+                        suppliers={suppliers}
+                    />
                 </> :
                 <>
                     <div className="d-flex justify-content-between align-items-center mb-2">

@@ -3,9 +3,11 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
 import { useSales } from "../hooks/useSales";
+import { useClients } from "../hooks/useClients";
 
 import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
+import { SaleForm } from "../components/entities/SaleForm";
 
 export function Sales() {
 
@@ -17,7 +19,7 @@ export function Sales() {
         showForm,
         setShowForm,
         saleFormData,
-        // handleSubmit,
+        handleSubmit,
         filter,
         setFilter,
         totalRows,
@@ -25,6 +27,11 @@ export function Sales() {
         deleteSale
     } = useSales();
     const { formData, setFormData } = saleFormData;
+    const { clients, getClients } = useClients();
+
+    useEffect(() => {
+        getClients();
+    }, [])
 
     useEffect(() => {
         const { page, offset } = filter;
@@ -36,7 +43,12 @@ export function Sales() {
             {showForm === 'NEW' || showForm === 'EDIT' ?
                 <>
                     <h2>{showForm === 'NEW' ? 'Nueva venta' : `Editar venta #${formData.id}`}</h2>
-
+                    <SaleForm
+                        saleFormData={saleFormData}
+                        setShowForm={setShowForm}
+                        handleSubmit={handleSubmit}
+                        clients={clients}
+                    />
                 </> :
                 <>
                     <div className="d-flex justify-content-between align-items-center mb-2">

@@ -4,6 +4,7 @@ import { format } from "date-fns";
 
 import { MessageContext } from "../contexts/MessageContext";
 
+import { AuthContext } from "../contexts/AuthContext";
 import { useForm } from "./useForm";
 
 import { db, SaleOrder } from "../utils/db";
@@ -11,6 +12,7 @@ import { ShowFormType } from "../utils/types";
 
 export function useSales() {
 
+    const { auth } = useContext(AuthContext);
     const { setBodyMessage, setHeaderMessage, setSeverity, setOpenMessage } = useContext(MessageContext);
 
     const saleFormData = useForm({
@@ -19,9 +21,11 @@ export function useSales() {
             client_id: '',
             date: format(new Date(Date.now()), 'yyyy-MM-dd'),
             status: 'PENDIENTE',
-            user_id: ''
+            user: ''
         },
-        rules: {}
+        rules: {
+            client_id: { required: true }
+        }
     })
 
     const [sales, setSales] = useState<SaleOrder[]>([]);
@@ -46,7 +50,7 @@ export function useSales() {
             try {
                 // controlar stock
                 if (showForm === 'NEW') {
-                    await db.sale_orders.add({ ...formData, id: undefined });
+                    await db.sale_orders.add({ ...formData, id: undefined, user: auth?.username });
                     setBodyMessage('Venta guardada correctamente.');
                     getSales();
                 } else if (showForm === 'EDIT') {
@@ -61,7 +65,7 @@ export function useSales() {
                 setSeverity('ERROR');
                 setBodyMessage('Hubo un error al intentar guardar la venta.');
             }
-            setHeaderMessage(formData.name);
+            setHeaderMessage('Éxito');
             setOpenMessage(true);
         }
     }
@@ -77,7 +81,7 @@ export function useSales() {
             setBodyMessage('Hubo un error al intentar eliminar la venta.');
         }
         handleClose();
-        setHeaderMessage(saleFormData.formData.name);
+        setHeaderMessage('Éxito');
         setOpenMessage(true);
     }
 

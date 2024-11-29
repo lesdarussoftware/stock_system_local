@@ -2,6 +2,7 @@
 import { useContext, useMemo, useState } from "react";
 import { format } from "date-fns";
 
+import { AuthContext } from "../contexts/AuthContext";
 import { MessageContext } from "../contexts/MessageContext";
 
 import { useForm } from "./useForm";
@@ -11,6 +12,7 @@ import { ShowFormType } from "../utils/types";
 
 export function usePurchases() {
 
+    const { auth } = useContext(AuthContext);
     const { setBodyMessage, setHeaderMessage, setSeverity, setOpenMessage } = useContext(MessageContext);
 
     const purchaseFormData = useForm({
@@ -19,9 +21,11 @@ export function usePurchases() {
             supplier_id: '',
             date: format(new Date(Date.now()), 'yyyy-MM-dd'),
             status: 'PENDIENTE',
-            user_id: ''
+            user: ''
         },
-        rules: {}
+        rules: {
+            supplier_id: { required: true }
+        }
     })
 
     const [purchases, setPurchases] = useState<BuyOrder[]>([]);
@@ -45,7 +49,7 @@ export function usePurchases() {
         if (validate()) {
             try {
                 if (showForm === 'NEW') {
-                    await db.buy_orders.add({ ...formData, id: undefined });
+                    await db.buy_orders.add({ ...formData, id: undefined, user: auth?.username });
                     setBodyMessage('Compra guardada correctamente.');
                     getPurchases();
                 } else if (showForm === 'EDIT') {
@@ -60,7 +64,7 @@ export function usePurchases() {
                 setSeverity('ERROR');
                 setBodyMessage('Hubo un error al intentar guardar la compra.');
             }
-            setHeaderMessage(formData.name);
+            setHeaderMessage('Éxito');
             setOpenMessage(true);
         }
     }
@@ -76,7 +80,7 @@ export function usePurchases() {
             setBodyMessage('Hubo un error al intentar eliminar la compra.');
         }
         handleClose();
-        setHeaderMessage(purchaseFormData.formData.name);
+        setHeaderMessage('Éxito');
         setOpenMessage(true);
     }
 
