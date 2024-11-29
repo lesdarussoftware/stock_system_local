@@ -3,10 +3,12 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { format } from 'date-fns';
 
+import { ShowFormType } from '../../utils/types';
+
 type MovementFormProps = {
     movementFormData: any;
-    showForm: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null;
-    setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null) => void;
+    showForm: ShowFormType;
+    setShowForm: (value: ShowFormType) => void;
     handleSubmit: (e: any) => void
 }
 

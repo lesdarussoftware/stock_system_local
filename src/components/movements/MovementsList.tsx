@@ -8,10 +8,11 @@ import { TableComponent } from "../common/TableComponent";
 import { MovementForm } from "../entities/MovementForm";
 
 import { Product } from "../../utils/db";
+import { ShowFormType } from "../../utils/types";
 
 type MovementsListProps = {
     product: Product;
-    setProductShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null) => void;
+    setProductShowForm: (value: ShowFormType) => void;
 }
 
 export function MovementsList({ product, setProductShowForm }: MovementsListProps) {

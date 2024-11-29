@@ -7,6 +7,7 @@ import { MessageContext } from "../contexts/MessageContext";
 import { useForm } from "./useForm";
 
 import { db, BuyOrder } from "../utils/db";
+import { ShowFormType } from "../utils/types";
 
 export function usePurchases() {
 
@@ -24,7 +25,7 @@ export function usePurchases() {
     })
 
     const [purchases, setPurchases] = useState<BuyOrder[]>([]);
-    const [showForm, setShowForm] = useState<'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | 'ADJUST' | null>(null);
+    const [showForm, setShowForm] = useState<ShowFormType>(null);
     const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
     const [totalRows, setTotalRows] = useState<number>(0);
 

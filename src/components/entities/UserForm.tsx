@@ -2,9 +2,11 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
+import { ShowFormType } from '../../utils/types';
+
 type UserFormProps = {
     userFormData: any;
-    setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null) => void;
+    setShowForm: (value: ShowFormType) => void;
     handleSubmit: (e: any) => void;
     forAuth?: boolean;
 }

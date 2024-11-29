@@ -3,11 +3,12 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 import { Category, Store, Supplier } from '../../utils/db';
+import { ShowFormType } from '../../utils/types';
 
 type ProductFormProps = {
     productFormData: any;
-    showForm: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null;
-    setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null) => void;
+    showForm: ShowFormType;
+    setShowForm: (value: ShowFormType) => void;
     handleSubmit: (e: any) => void;
     categories: Category[];
     suppliers: Supplier[];

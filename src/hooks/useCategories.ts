@@ -7,6 +7,7 @@ import { useForm } from "./useForm";
 
 import { categoryHasNotChildren, nameDoesNotExist } from "../middlewares/category";
 import { Category, db } from "../utils/db";
+import { ShowFormType } from "../utils/types";
 
 export function useCategories() {
 
@@ -18,7 +19,7 @@ export function useCategories() {
     })
 
     const [categories, setCategories] = useState<Category[]>([]);
-    const [showForm, setShowForm] = useState<'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | 'ADJUST' | null>(null);
+    const [showForm, setShowForm] = useState<ShowFormType>(null);
     const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
     const [totalRows, setTotalRows] = useState<number>(0);
 

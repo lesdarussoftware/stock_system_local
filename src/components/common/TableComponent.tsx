@@ -4,6 +4,8 @@ import Table from 'react-bootstrap/Table';
 import Pagination from 'react-bootstrap/Pagination';
 import Form from 'react-bootstrap/Form';
 
+import { ShowFormType } from '../../utils/types';
+
 type TableComponentProps = {
     columns: Array<{ id: string, label: string, accessor: any, sortable?: boolean }>;
     rows: Array<{ [key: string]: any }>;
@@ -13,7 +15,7 @@ type TableComponentProps = {
     setFilter: (value: any) => void;
     totalRows: number;
     setFormData: (value: any) => void;
-    setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | 'ADJUST' | null) => void;
+    setShowForm: (value: ShowFormType) => void;
     showViewAction?: boolean;
     showEditAction?: boolean;
     showDeleteAction?: boolean;

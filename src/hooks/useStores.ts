@@ -7,6 +7,7 @@ import { useForm } from "./useForm";
 
 import { nameDoesNotExist, storeHasNotProducts } from "../middlewares/store";
 import { db, Store } from "../utils/db";
+import { ShowFormType } from "../utils/types";
 
 export function useStores() {
 
@@ -31,7 +32,7 @@ export function useStores() {
     });
 
     const [stores, setStores] = useState<Store[]>([]);
-    const [showForm, setShowForm] = useState<'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | 'ADJUST' | null>(null);
+    const [showForm, setShowForm] = useState<ShowFormType>(null);
     const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
     const [totalRows, setTotalRows] = useState<number>(0);
 

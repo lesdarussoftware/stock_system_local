@@ -8,6 +8,7 @@ import { MessageContext } from "../contexts/MessageContext";
 import { useForm } from "./useForm";
 
 import { db, Movement } from "../utils/db";
+import { ShowFormType } from "../utils/types";
 
 export function useMovements() {
 
@@ -30,7 +31,7 @@ export function useMovements() {
     })
 
     const [movements, setMovements] = useState<Movement[]>([]);
-    const [showForm, setShowForm] = useState<'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | 'ADJUST' | null>(null);
+    const [showForm, setShowForm] = useState<ShowFormType>(null);
     const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
     const [totalRows, setTotalRows] = useState<number>(0);
 
