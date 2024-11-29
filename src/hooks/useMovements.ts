@@ -30,7 +30,7 @@ export function useMovements() {
     })
 
     const [movements, setMovements] = useState<Movement[]>([]);
-    const [showForm, setShowForm] = useState<'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null>(null);
+    const [showForm, setShowForm] = useState<'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | 'ADJUST' | null>(null);
     const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
     const [totalRows, setTotalRows] = useState<number>(0);
 
@@ -51,7 +51,7 @@ export function useMovements() {
     }
 
 
-    async function handleSubmit(e: any, setProductShowForm?: any) {
+    async function handleSubmit(e: any) {
         e.preventDefault();
         const { formData, validate, reset } = movementFormData;
         if (validate()) {
@@ -59,7 +59,6 @@ export function useMovements() {
                 if (showForm === 'NEW') {
                     await db.movements.add({ ...formData, id: undefined, user: auth?.username });
                     setBodyMessage('Movimiento guardado correctamente.');
-                    getMovements(formData.product_id);
                 } else if (showForm === 'EDIT') {
                     await db.movements.update(formData.id, formData);
                     setBodyMessage('Movimiento editado correctamente.');
@@ -68,7 +67,6 @@ export function useMovements() {
                 setSeverity('SUCCESS');
                 setShowForm(null);
                 reset();
-                if (setProductShowForm) setProductShowForm(null);
             } catch (e) {
                 setSeverity('ERROR');
                 setBodyMessage('Hubo un error al intentar guardar el movimiento.');

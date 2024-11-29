@@ -6,12 +6,11 @@ import { useProducts } from "../hooks/useProducts";
 import { useCategories } from "../hooks/useCategories";
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useStores } from "../hooks/useStores";
-import { useMovements } from "../hooks/useMovements";
 
 import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
 import { ProductForm } from "../components/entities/ProductForm";
-import { MovementForm } from "../components/entities/MovementForm";
+import { MovementsList } from "../components/movements/MovementsList";
 
 export function Products() {
 
@@ -34,12 +33,6 @@ export function Products() {
         deleteProduct
     } = useProducts();
     const { formData, setFormData } = productFormData;
-    const {
-        movementFormData,
-        showForm: movementShowForm,
-        setShowForm: setMovementShowForm,
-        handleSubmit: handleSubmitMovement
-    } = useMovements();
 
     useEffect(() => {
         getCategories();
@@ -51,13 +44,6 @@ export function Products() {
         const { page, offset } = filter;
         getProducts(page, offset);
     }, [filter]);
-
-    useEffect(() => {
-        if (showForm === 'ADJUST') {
-            movementFormData.setFormData({ ...movementFormData.formData, product_id: productFormData.formData.id });
-            setMovementShowForm('NEW');
-        }
-    }, [productFormData.formData, showForm])
 
     return (
         <Layout>
@@ -79,18 +65,10 @@ export function Products() {
                     />
                 </> :
                 showForm === 'ADJUST' ?
-                    <>
-                        <h2>
-                            {`Nuevo movimiento para el producto #${formData.sku}`}
-                        </h2>
-                        <MovementForm
-                            movementFormData={movementFormData}
-                            movementShowForm={movementShowForm}
-                            setShowForm={setShowForm}
-                            setMovementShowForm={setMovementShowForm}
-                            handleSubmitMovement={handleSubmitMovement}
-                        />
-                    </> :
+                    <MovementsList
+                        product={formData}
+                        setProductShowForm={setShowForm}
+                    /> :
                     <>
                         <div className="d-flex justify-content-between align-items-center mb-2">
                             <h2>Productos</h2>

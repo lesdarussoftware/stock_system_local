@@ -5,30 +5,28 @@ import { format } from 'date-fns';
 
 type MovementFormProps = {
     movementFormData: any;
-    movementShowForm: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null;
-    setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | 'ADJUST' | null) => void;
-    setMovementShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null) => void;
-    handleSubmitMovement: (e: any) => void
+    showForm: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null;
+    setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null) => void;
+    handleSubmit: (e: any) => void
 }
 
 export function MovementForm({
     movementFormData,
-    movementShowForm,
+    showForm,
     setShowForm,
-    setMovementShowForm,
-    handleSubmitMovement
+    handleSubmit
 }: MovementFormProps) {
 
     const { errors, handleChange, reset, formData } = movementFormData;
 
     return (
-        <Form className='mt-4' onSubmit={e => handleSubmitMovement(e, setShowForm)}>
+        <Form className='mt-4' onSubmit={e => handleSubmit(e)}>
             <Form.Group controlId="type">
                 <Form.Label>Tipo</Form.Label>
                 <Form.Select
                     name='type'
                     value={formData.type}
-                    disabled={movementShowForm !== 'NEW'}
+                    disabled={showForm !== 'NEW'}
                     onChange={e => handleChange({ target: { name: 'type', value: e.target.value } })}
                 >
                     <option value="INGRESO">INGRESO</option>
@@ -75,7 +73,7 @@ export function MovementForm({
             <div className='mt-5 d-flex justify-content-center gap-3'>
                 <Button variant="secondary" type="button" className='w-25' onClick={() => {
                     setShowForm(null);
-                    setMovementShowForm(null);
+                    setShowForm(null);
                     reset();
                 }}>
                     Cancelar
