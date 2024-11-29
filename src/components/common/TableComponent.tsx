@@ -13,10 +13,11 @@ type TableComponentProps = {
     setFilter: (value: any) => void;
     totalRows: number;
     setFormData: (value: any) => void;
-    setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null) => void;
+    setShowForm: (value: 'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | 'ADJUST' | null) => void;
     showViewAction?: boolean;
     showEditAction?: boolean;
     showDeleteAction?: boolean;
+    showAdjustAction?: boolean;
 }
 
 export function TableComponent({
@@ -32,6 +33,7 @@ export function TableComponent({
     showViewAction,
     showEditAction,
     showDeleteAction,
+    showAdjustAction
 }: TableComponentProps) {
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
@@ -110,7 +112,7 @@ export function TableComponent({
                                             </button>
                                         }
                                         {showEditAction &&
-                                            <button type="button" className="btn btn-warning btn-sm mx-2" onClick={() => {
+                                            <button type="button" className="btn btn-warning btn-sm me-2" onClick={() => {
                                                 setFormData(row);
                                                 setShowForm('EDIT');
                                             }}>
@@ -118,11 +120,19 @@ export function TableComponent({
                                             </button>
                                         }
                                         {showDeleteAction &&
-                                            <button type="button" className="btn btn-danger btn-sm" onClick={() => {
+                                            <button type="button" className="btn btn-danger btn-sm me-2" onClick={() => {
                                                 setFormData(row);
                                                 setShowForm('DELETE');
                                             }}>
                                                 Eliminar
+                                            </button>
+                                        }
+                                        {showAdjustAction &&
+                                            <button type="button" className="btn btn-info btn-sm" onClick={() => {
+                                                setFormData(row);
+                                                setShowForm('ADJUST');
+                                            }}>
+                                                Ajustar
                                             </button>
                                         }
                                     </td>

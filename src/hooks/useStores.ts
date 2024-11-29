@@ -31,7 +31,7 @@ export function useStores() {
     });
 
     const [stores, setStores] = useState<Store[]>([]);
-    const [showForm, setShowForm] = useState<'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | null>(null);
+    const [showForm, setShowForm] = useState<'NEW' | 'VIEW' | 'EDIT' | 'DELETE' | 'ADJUST' | null>(null);
     const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
     const [totalRows, setTotalRows] = useState<number>(0);
 

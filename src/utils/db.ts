@@ -61,9 +61,9 @@ interface Movement {
     product_id: number;
     amount: number;
     date: Date;
-    type: 'INGRESO' | 'EGRESO' | 'AJUSTE';
+    type: 'INGRESO' | 'EGRESO';
     observations?: string;
-    user_id: number;
+    user: string;
     created_at: Date;
     updated_at: Date;
 }
@@ -141,7 +141,7 @@ db.version(1).stores({
     suppliers: '++id, name, phone, email, address, city, created_at, updated_at',
     stores: '++id, name, phone, email, address, city, created_at, updated_at',
     products: '++id, name, sku, bar_code, buy_price, earn, sale_price, min_stock, is_active, category_id, supplier_id, store_id, created_at, updated_at',
-    movements: '++id, product_id, amount, date, type, user_id, created_at, updated_at',
+    movements: '++id, product_id, amount, date, type, user, created_at, updated_at',
     clients: '++id, name, phone, email, address, city, created_at, updated_at',
     buy_orders: '++id, supplier_id, date, status, user_id, created_at, updated_at',
     buy_products: '++id, buy_order_id, product_id, amount, product_buy_price, created_at, updated_at',

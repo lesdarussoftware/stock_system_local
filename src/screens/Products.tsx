@@ -6,10 +6,12 @@ import { useProducts } from "../hooks/useProducts";
 import { useCategories } from "../hooks/useCategories";
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useStores } from "../hooks/useStores";
+import { useMovements } from "../hooks/useMovements";
 
 import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
 import { ProductForm } from "../components/entities/ProductForm";
+import { MovementForm } from "../components/entities/MovementForm";
 
 export function Products() {
 
@@ -32,6 +34,12 @@ export function Products() {
         deleteProduct
     } = useProducts();
     const { formData, setFormData } = productFormData;
+    const {
+        movementFormData,
+        showForm: movementShowForm,
+        setShowForm: setMovementShowForm,
+        handleSubmit: handleSubmitMovement
+    } = useMovements();
 
     useEffect(() => {
         getCategories();
@@ -44,6 +52,13 @@ export function Products() {
         getProducts(page, offset);
     }, [filter]);
 
+    useEffect(() => {
+        if (showForm === 'ADJUST') {
+            movementFormData.setFormData({ ...movementFormData.formData, product_id: productFormData.formData.id });
+            setMovementShowForm('NEW');
+        }
+    }, [productFormData.formData, showForm])
+
     return (
         <Layout>
             {showForm === 'NEW' || showForm === 'VIEW' || showForm === 'EDIT' ?
@@ -51,7 +66,7 @@ export function Products() {
                     <h2>
                         {showForm === 'NEW' ? 'Nuevo producto' :
                             showForm === 'VIEW' ? formData.sku :
-                                `Editar producto #${formData.id}`}
+                                `Editar producto #${formData.sku}`}
                     </h2>
                     <ProductForm
                         productFormData={productFormData}
@@ -63,42 +78,56 @@ export function Products() {
                         stores={stores}
                     />
                 </> :
-                <>
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                        <h2>Productos</h2>
-                        <button className="btn btn-primary" onClick={() => setShowForm('NEW')}>
-                            Nuevo
-                        </button>
-                    </div>
-                    <TableComponent
-                        columns={columns}
-                        rows={products}
-                        setRows={setProducts}
-                        filter={filter}
-                        setFilter={setFilter}
-                        totalRows={totalRows}
-                        setFormData={setFormData}
-                        setShowForm={setShowForm}
-                        actions
-                        showViewAction
-                        showEditAction
-                        showDeleteAction
-                    />
-                    <Modal show={showForm === 'DELETE'} onHide={handleClose} backdrop="static" keyboard={false}        >
-                        <Modal.Header closeButton>
-                            <Modal.Title>{`Borrar producto ${formData.sku}`}</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            Los datos no podrán ser recuperados.
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={handleClose}>
-                                Cancelar
-                            </Button>
-                            <Button variant="danger" onClick={deleteProduct}>Confirmar</Button>
-                        </Modal.Footer>
-                    </Modal>
-                </>
+                showForm === 'ADJUST' ?
+                    <>
+                        <h2>
+                            {`Nuevo movimiento para el producto #${formData.sku}`}
+                        </h2>
+                        <MovementForm
+                            movementFormData={movementFormData}
+                            movementShowForm={movementShowForm}
+                            setShowForm={setShowForm}
+                            setMovementShowForm={setMovementShowForm}
+                            handleSubmitMovement={handleSubmitMovement}
+                        />
+                    </> :
+                    <>
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                            <h2>Productos</h2>
+                            <button className="btn btn-primary" onClick={() => setShowForm('NEW')}>
+                                Nuevo
+                            </button>
+                        </div>
+                        <TableComponent
+                            columns={columns}
+                            rows={products}
+                            setRows={setProducts}
+                            filter={filter}
+                            setFilter={setFilter}
+                            totalRows={totalRows}
+                            setFormData={setFormData}
+                            setShowForm={setShowForm}
+                            actions
+                            showViewAction
+                            showEditAction
+                            showDeleteAction
+                            showAdjustAction
+                        />
+                        <Modal show={showForm === 'DELETE'} onHide={handleClose} backdrop="static" keyboard={false}        >
+                            <Modal.Header closeButton>
+                                <Modal.Title>{`Borrar producto ${formData.sku}`}</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                Los datos no podrán ser recuperados.
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleClose}>
+                                    Cancelar
+                                </Button>
+                                <Button variant="danger" onClick={deleteProduct}>Confirmar</Button>
+                            </Modal.Footer>
+                        </Modal>
+                    </>
             }
         </Layout>
     )
