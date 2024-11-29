@@ -83,7 +83,7 @@ interface BuyOrder {
     id: number;
     supplier_id: number;
     date: Date;
-    status: 'PENDIENTE' | 'RECIBIDO' | 'CANCELADO';
+    status: 'PENDIENTE' | 'RECIBIDA' | 'CANCELADA';
     user_id: number;
     created_at: Date;
     updated_at: Date;
@@ -103,7 +103,7 @@ interface SaleOrder {
     id: number;
     client_id: number;
     date: Date;
-    status: 'PENDIENTE' | 'RECIBIDO' | 'CANCELADO';
+    status: 'PENDIENTE' | 'FINALIZADA' | 'CANCELADA';
     user_id: number;
     created_at: Date;
     updated_at: Date;

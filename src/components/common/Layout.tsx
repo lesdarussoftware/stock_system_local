@@ -28,10 +28,14 @@ export function Layout({ children }: LayoutProps) {
                             </button>
                         </li>
                         <li>
-                            <button className="btn btn-secondary">Ventas</button>
+                            <button className="btn btn-secondary" onClick={() => navigate('/sales')}>
+                                Ventas
+                            </button>
                         </li>
                         <li>
-                            <button className="btn btn-secondary">Compras</button>
+                            <button className="btn btn-secondary" onClick={() => navigate('/purchases')}>
+                                Compras
+                            </button>
                         </li>
                         <li>
                             <button className="btn btn-secondary" onClick={() => navigate('/categories')}>
