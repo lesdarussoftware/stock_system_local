@@ -7,6 +7,7 @@ import { useCategories } from "../hooks/useCategories";
 import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
 import { CategoryForm } from "../components/entities/CategoryForm";
+import { AddIcon } from "../components/svg/AddIcon";
 
 export function Categories() {
 
@@ -46,8 +47,8 @@ export function Categories() {
                 <>
                     <div className="d-flex justify-content-between align-items-center mb-2">
                         <h2>Categorías</h2>
-                        <button className="btn btn-primary" onClick={() => setShowForm('NEW')}>
-                            Nueva
+                        <button className="btn btn-primary d-flex align-items-center btn-lg" onClick={() => setShowForm('NEW')}>
+                            <AddIcon />
                         </button>
                     </div>
                     <TableComponent

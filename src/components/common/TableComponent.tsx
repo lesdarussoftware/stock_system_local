@@ -4,6 +4,11 @@ import Table from 'react-bootstrap/Table';
 import Pagination from 'react-bootstrap/Pagination';
 import Form from 'react-bootstrap/Form';
 
+import { EditIcon } from '../svg/EditIcon';
+import { DeleteIcon } from '../svg/DeleteIcon';
+import { AdjustIcon } from '../svg/AdjustIcon';
+import { ViewIcon } from '../svg/ViewIcon';
+
 import { ShowFormType } from '../../utils/types';
 
 type TableComponentProps = {
@@ -104,37 +109,37 @@ export function TableComponent({
                         rows.map(row => (
                             <tr key={row.id}>
                                 {actions &&
-                                    <td>
+                                    <td className='d-flex gap-2'>
                                         {showViewAction &&
-                                            <button type="button" className="btn btn-info btn-sm me-2" onClick={() => {
+                                            <button type="button" className="btn btn-info btn-sm text-white d-flex align-items-center" onClick={() => {
                                                 setFormData(row);
                                                 setShowForm('VIEW');
                                             }}>
-                                                Ver
+                                                <ViewIcon />
                                             </button>
                                         }
                                         {showEditAction &&
-                                            <button type="button" className="btn btn-warning btn-sm me-2" onClick={() => {
+                                            <button type="button" className="btn btn-warning btn-sm text-white d-flex align-items-center" onClick={() => {
                                                 setFormData(row);
                                                 setShowForm('EDIT');
                                             }}>
-                                                Editar
+                                                <EditIcon />
                                             </button>
                                         }
                                         {showDeleteAction &&
-                                            <button type="button" className="btn btn-danger btn-sm me-2" onClick={() => {
+                                            <button type="button" className="btn btn-danger btn-sm d-flex align-items-center" onClick={() => {
                                                 setFormData(row);
                                                 setShowForm('DELETE');
                                             }}>
-                                                Eliminar
+                                                <DeleteIcon />
                                             </button>
                                         }
                                         {showAdjustAction &&
-                                            <button type="button" className="btn btn-info btn-sm" onClick={() => {
+                                            <button type="button" className="btn btn-secondary btn-sm text-white d-flex align-items-center" onClick={() => {
                                                 setFormData(row);
                                                 setShowForm('ADJUST');
                                             }}>
-                                                Ajustar
+                                                <AdjustIcon />
                                             </button>
                                         }
                                     </td>

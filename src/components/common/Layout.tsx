@@ -1,4 +1,7 @@
 import { useNavigate } from "react-router-dom";
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
 
 import { useUsers } from "../../hooks/useUsers";
 
@@ -15,57 +18,21 @@ export function Layout({ children }: LayoutProps) {
     return (
         <div>
             <header>
-                <nav>
-                    <ul className="d-flex p-3 justify-content-end list-unstyled gap-4">
-                        <li>
-                            <button className="btn btn-secondary" onClick={() => navigate('/products')}>
-                                Artículos
-                            </button>
-                        </li>
-                        <li>
-                            <button className="btn btn-secondary" onClick={() => navigate('/clients')}>
-                                Clientes
-                            </button>
-                        </li>
-                        <li>
-                            <button className="btn btn-secondary" onClick={() => navigate('/sales')}>
-                                Ventas
-                            </button>
-                        </li>
-                        <li>
-                            <button className="btn btn-secondary" onClick={() => navigate('/purchases')}>
-                                Compras
-                            </button>
-                        </li>
-                        <li>
-                            <button className="btn btn-secondary" onClick={() => navigate('/categories')}>
-                                Categorías
-                            </button>
-                        </li>
-                        <li>
-                            <button className="btn btn-secondary" onClick={() => navigate('/suppliers')}>
-                                Proveedores
-                            </button>
-                        </li>
-                        <li>
-                            <button className="btn btn-secondary" onClick={() => navigate('/stores')}>
-                                Depósitos
-                            </button>
-                        </li>
-                        <li>
-                            <button className="btn btn-secondary" onClick={() => navigate('/users')}>
-                                Usuarios
-                            </button>
-                        </li>
-                        <li>
-                            <button className="btn btn-secondary" onClick={logout}>
-                                Salir
-                            </button>
-                        </li>
-                    </ul>
-                </nav>
+                <Navbar bg="dark" data-bs-theme="dark" className="">
+                    <Nav className="d-flex justify-content-end gap-3 w-100 px-3">
+                        <Nav.Link onClick={() => navigate('/products')}>Artículos</Nav.Link>
+                        <Nav.Link onClick={() => navigate('/clients')}>Clientes</Nav.Link>
+                        <Nav.Link onClick={() => navigate('/sales')}>Ventas</Nav.Link>
+                        <Nav.Link onClick={() => navigate('/purchases')}>Compras</Nav.Link>
+                        <Nav.Link onClick={() => navigate('/categories')}>Categorías</Nav.Link>
+                        <Nav.Link onClick={() => navigate('/suppliers')}>Proveedores</Nav.Link>
+                        <Nav.Link onClick={() => navigate('/stores')}>Depósitos</Nav.Link>
+                        <Nav.Link onClick={() => navigate('/users')}>Usuarios</Nav.Link>
+                        <Nav.Link onClick={logout}>Salir</Nav.Link>
+                    </Nav>
+                </Navbar>
             </header>
-            <main className="mx-5">
+            <main className="mx-5 mt-3">
                 {children}
             </main>
         </div>

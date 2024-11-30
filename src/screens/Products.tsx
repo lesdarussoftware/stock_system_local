@@ -11,6 +11,7 @@ import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
 import { ProductForm } from "../components/entities/ProductForm";
 import { MovementsList } from "../components/products/MovementsList";
+import { AddIcon } from "../components/svg/AddIcon";
 
 export function Products() {
 
@@ -72,8 +73,8 @@ export function Products() {
                     <>
                         <div className="d-flex justify-content-between align-items-center mb-2">
                             <h2>Artículos</h2>
-                            <button className="btn btn-primary" onClick={() => setShowForm('NEW')}>
-                                Nuevo
+                            <button className="btn btn-primary d-flex align-items-center btn-lg" onClick={() => setShowForm('NEW')}>
+                                <AddIcon />
                             </button>
                         </div>
                         <TableComponent

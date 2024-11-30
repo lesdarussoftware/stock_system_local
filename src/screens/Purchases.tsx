@@ -8,6 +8,7 @@ import { useSuppliers } from "../hooks/useSuppliers";
 import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
 import { PurchaseForm } from "../components/entities/PurchaseForm";
+import { AddIcon } from "../components/svg/AddIcon";
 
 export function Purchases() {
 
@@ -53,8 +54,8 @@ export function Purchases() {
                 <>
                     <div className="d-flex justify-content-between align-items-center mb-2">
                         <h2>Compras</h2>
-                        <button className="btn btn-primary" onClick={() => setShowForm('NEW')}>
-                            Nueva
+                        <button className="btn btn-primary d-flex align-items-center btn-lg" onClick={() => setShowForm('NEW')}>
+                            <AddIcon />
                         </button>
                     </div>
                     <TableComponent

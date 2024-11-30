@@ -4,11 +4,12 @@ import Button from 'react-bootstrap/Button';
 
 import { useSales } from "../hooks/useSales";
 import { useClients } from "../hooks/useClients";
+import { useProducts } from "../hooks/useProducts";
 
 import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
 import { SaleForm } from "../components/entities/SaleForm";
-import { useProducts } from "../hooks/useProducts";
+import { AddIcon } from "../components/svg/AddIcon";
 
 export function Sales() {
 
@@ -61,8 +62,8 @@ export function Sales() {
                 <>
                     <div className="d-flex justify-content-between align-items-center mb-2">
                         <h2>Ventas</h2>
-                        <button className="btn btn-primary" onClick={() => setShowForm('NEW')}>
-                            Nueva
+                        <button className="btn btn-primary d-flex align-items-center btn-lg" onClick={() => setShowForm('NEW')}>
+                            <AddIcon />
                         </button>
                     </div>
                     <TableComponent

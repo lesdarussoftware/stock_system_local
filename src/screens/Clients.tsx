@@ -7,6 +7,7 @@ import { useClients } from "../hooks/useClients";
 import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
 import { ClientForm } from "../components/entities/ClientForm";
+import { AddIcon } from "../components/svg/AddIcon";
 
 export function Clients() {
 
@@ -46,8 +47,8 @@ export function Clients() {
                 <>
                     <div className="d-flex justify-content-between align-items-center mb-2">
                         <h2>Clientes</h2>
-                        <button className="btn btn-primary" onClick={() => setShowForm('NEW')}>
-                            Nuevo
+                        <button className="btn btn-primary d-flex align-items-center btn-lg" onClick={() => setShowForm('NEW')}>
+                            <AddIcon />
                         </button>
                     </div>
                     <TableComponent

@@ -7,6 +7,7 @@ import { useSuppliers } from "../hooks/useSuppliers";
 import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
 import { SupplierForm } from "../components/entities/SupplierForm";
+import { AddIcon } from "../components/svg/AddIcon";
 
 export function Suppliers() {
 
@@ -46,8 +47,8 @@ export function Suppliers() {
                 <>
                     <div className="d-flex justify-content-between align-items-center mb-2">
                         <h2>Proveedores</h2>
-                        <button className="btn btn-primary" onClick={() => setShowForm('NEW')}>
-                            Nuevo
+                        <button className="btn btn-primary d-flex align-items-center btn-lg" onClick={() => setShowForm('NEW')}>
+                            <AddIcon />
                         </button>
                     </div>
                     <TableComponent
