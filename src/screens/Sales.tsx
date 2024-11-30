@@ -8,6 +8,7 @@ import { useClients } from "../hooks/useClients";
 import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
 import { SaleForm } from "../components/entities/SaleForm";
+import { useProducts } from "../hooks/useProducts";
 
 export function Sales() {
 
@@ -24,13 +25,17 @@ export function Sales() {
         setFilter,
         totalRows,
         handleClose,
-        deleteSale
+        deleteSale,
+        items,
+        setItems
     } = useSales();
     const { formData, setFormData } = saleFormData;
     const { clients, getClients } = useClients();
+    const { products, getProducts } = useProducts();
 
     useEffect(() => {
         getClients();
+        getProducts();
     }, [])
 
     useEffect(() => {
@@ -48,6 +53,9 @@ export function Sales() {
                         setShowForm={setShowForm}
                         handleSubmit={handleSubmit}
                         clients={clients}
+                        items={items}
+                        setItems={setItems}
+                        products={products}
                     />
                 </> :
                 <>

@@ -3,17 +3,30 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { format } from 'date-fns';
 
+import { CommercialTable } from '../products/CommercialTable';
+
 import { ShowFormType } from '../../utils/types';
-import { Client } from '../../utils/db';
+import { Client, Product } from '../../utils/db';
 
 type SaleFormProps = {
     saleFormData: any;
     setShowForm: (value: ShowFormType) => void;
     handleSubmit: (e: any) => void
     clients: Client[];
+    products: Product[];
+    items: any;
+    setItems: (value: any) => void;
 }
 
-export function SaleForm({ saleFormData, setShowForm, handleSubmit, clients }: SaleFormProps) {
+export function SaleForm({
+    saleFormData,
+    setShowForm,
+    handleSubmit,
+    clients,
+    products,
+    items,
+    setItems
+}: SaleFormProps) {
 
     const { errors, handleChange, reset, formData } = saleFormData;
 
@@ -60,6 +73,11 @@ export function SaleForm({ saleFormData, setShowForm, handleSubmit, clients }: S
                     <option value="CANCELADA">CANCELADA</option>
                 </Form.Select>
             </Form.Group>
+            <CommercialTable
+                items={items}
+                setItems={setItems}
+                products={products}
+            />
             <div className='mt-5 d-flex justify-content-center gap-3'>
                 <Button variant="secondary" type="button" className='w-25' onClick={() => {
                     setShowForm(null);
@@ -68,7 +86,7 @@ export function SaleForm({ saleFormData, setShowForm, handleSubmit, clients }: S
                 }}>
                     Cancelar
                 </Button>
-                <Button variant="primary" type="submit" className='w-25'>
+                <Button variant="primary" type="submit" className='w-25' disabled={formData.disabled || items.length === 0}>
                     Guardar
                 </Button>
             </div>

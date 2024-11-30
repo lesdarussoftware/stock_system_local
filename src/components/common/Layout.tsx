@@ -19,7 +19,7 @@ export function Layout({ children }: LayoutProps) {
                     <ul className="d-flex p-3 justify-content-end list-unstyled gap-4">
                         <li>
                             <button className="btn btn-secondary" onClick={() => navigate('/products')}>
-                                Productos
+                                Artículos
                             </button>
                         </li>
                         <li>

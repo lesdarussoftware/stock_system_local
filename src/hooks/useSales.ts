@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useMemo, useState } from "react";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 
 import { MessageContext } from "../contexts/MessageContext";
 
@@ -32,6 +32,7 @@ export function useSales() {
     const [showForm, setShowForm] = useState<ShowFormType>(null);
     const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
     const [totalRows, setTotalRows] = useState<number>(0);
+    const [items, setItems] = useState<any[]>([]);
 
     async function getSales(page: number = 1, offset: number = 50) {
         const start = (page - 1) * offset;
@@ -133,6 +134,8 @@ export function useSales() {
         filter,
         setFilter,
         totalRows,
-        handleClose
+        handleClose,
+        items,
+        setItems
     }
 }

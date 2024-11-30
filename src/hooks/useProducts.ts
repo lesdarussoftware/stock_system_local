@@ -69,11 +69,11 @@ export function useProducts() {
                 if (isValid) {
                     if (showForm === 'NEW') {
                         await db.products.add({ ...formData, id: undefined });
-                        setBodyMessage('Producto guardado correctamente.');
+                        setBodyMessage('Artículo guardado correctamente.');
                         getProducts();
                     } else if (showForm === 'EDIT') {
                         await db.products.update(formData.id, formData);
-                        setBodyMessage('Producto editado correctamente.');
+                        setBodyMessage('Artículo editado correctamente.');
                         getProducts(filter.page, filter.offset);
                     }
                     setSeverity('SUCCESS');
@@ -85,7 +85,7 @@ export function useProducts() {
                 }
             } catch (e) {
                 setSeverity('ERROR');
-                setBodyMessage('Hubo un error al intentar guardar el producto.');
+                setBodyMessage('Hubo un error al intentar guardar el artículo.');
             }
             setHeaderMessage(formData.name);
             setOpenMessage(true);
@@ -95,7 +95,7 @@ export function useProducts() {
     async function deleteProduct() {
         try {
             await db.products.delete(+productFormData.formData.id);
-            setBodyMessage('Producto eliminado correctamente.');
+            setBodyMessage('Artículo eliminado correctamente.');
             setSeverity('SUCCESS');
             getProducts(filter.page, filter.offset);
         } catch (e) {

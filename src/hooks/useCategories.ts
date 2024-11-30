@@ -75,7 +75,7 @@ export function useCategories() {
                 getCategories(filter.page, filter.offset);
             } else {
                 setSeverity('ERROR');
-                setBodyMessage('Esta categoría tiene productos asociados.');
+                setBodyMessage('Esta categoría tiene artículos asociados.');
             }
         } catch (e) {
             setSeverity('ERROR');

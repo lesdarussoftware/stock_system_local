@@ -88,7 +88,7 @@ export function useSuppliers() {
                 getSuppliers(filter.page, filter.offset);
             } else {
                 setSeverity('ERROR');
-                setBodyMessage('Este proveedor tiene productos asociados.');
+                setBodyMessage('Este proveedor tiene artículos asociados.');
             }
         } catch (e) {
             setSeverity('ERROR');

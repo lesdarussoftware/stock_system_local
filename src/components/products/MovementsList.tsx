@@ -43,8 +43,8 @@ export function MovementsList({ product, setProductShowForm }: MovementsListProp
             {showForm === 'NEW' || showForm === 'EDIT' ?
                 <>
                     <h2>
-                        {showForm === 'NEW' ? `Nuevo movimiento para el producto ${product.sku}` :
-                            `Editar movimiento #${formData.id} del producto ${product.sku}`}
+                        {showForm === 'NEW' ? `Nuevo movimiento para el artículo ${product.sku}` :
+                            `Editar movimiento #${formData.id} del artículo ${product.sku}`}
                     </h2>
                     <MovementForm
                         movementFormData={movementFormData}
@@ -55,9 +55,9 @@ export function MovementsList({ product, setProductShowForm }: MovementsListProp
                 </> :
                 <>
                     <div className='d-flex justify-content-between align-items-start'>
-                        <h2>{`Movimientos del producto ${product.sku}`}</h2>
+                        <h2>{`Movimientos del artículo ${product.sku}`}</h2>
                         <Button variant="secondary" type="button" onClick={() => setProductShowForm(null)}>
-                            Volver a lista de productos
+                            Volver a lista de artículos
                         </Button>
                     </div>
                     <TableComponent
@@ -75,7 +75,7 @@ export function MovementsList({ product, setProductShowForm }: MovementsListProp
                     />
                     <Modal show={showForm === 'DELETE'} onHide={handleClose} backdrop="static" keyboard={false}        >
                         <Modal.Header closeButton>
-                            <Modal.Title>{`Borrar movimiento #${formData.id} del producto ${product.sku}`}</Modal.Title>
+                            <Modal.Title>{`Borrar movimiento #${formData.id} del artículo ${product.sku}`}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             Los datos no podrán ser recuperados.

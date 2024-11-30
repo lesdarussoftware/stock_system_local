@@ -88,7 +88,7 @@ export function useStores() {
                 getStores(filter.page, filter.offset);
             } else {
                 setSeverity('ERROR');
-                setBodyMessage('Este depósito tiene productos asociados.');
+                setBodyMessage('Este depósito tiene artículos asociados.');
             }
         } catch (e) {
             setSeverity('ERROR');

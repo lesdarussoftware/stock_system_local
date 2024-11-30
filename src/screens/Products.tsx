@@ -10,7 +10,7 @@ import { useStores } from "../hooks/useStores";
 import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
 import { ProductForm } from "../components/entities/ProductForm";
-import { MovementsList } from "../components/movements/MovementsList";
+import { MovementsList } from "../components/products/MovementsList";
 
 export function Products() {
 
@@ -50,9 +50,9 @@ export function Products() {
             {showForm === 'NEW' || showForm === 'VIEW' || showForm === 'EDIT' ?
                 <>
                     <h2>
-                        {showForm === 'NEW' ? 'Nuevo producto' :
+                        {showForm === 'NEW' ? 'Nuevo artículo' :
                             showForm === 'VIEW' ? formData.sku :
-                                `Editar producto #${formData.sku}`}
+                                `Editar artículo #${formData.sku}`}
                     </h2>
                     <ProductForm
                         productFormData={productFormData}
@@ -71,7 +71,7 @@ export function Products() {
                     /> :
                     <>
                         <div className="d-flex justify-content-between align-items-center mb-2">
-                            <h2>Productos</h2>
+                            <h2>Artículos</h2>
                             <button className="btn btn-primary" onClick={() => setShowForm('NEW')}>
                                 Nuevo
                             </button>
@@ -93,7 +93,7 @@ export function Products() {
                         />
                         <Modal show={showForm === 'DELETE'} onHide={handleClose} backdrop="static" keyboard={false}        >
                             <Modal.Header closeButton>
-                                <Modal.Title>{`Borrar producto ${formData.sku}`}</Modal.Title>
+                                <Modal.Title>{`Borrar artículo ${formData.sku}`}</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
                                 Los datos no podrán ser recuperados.
