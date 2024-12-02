@@ -8,6 +8,7 @@ import { useForm } from "./useForm";
 import { skuDoesNotExist } from "../middlewares/product";
 import { db, Product } from "../utils/db";
 import { ShowFormType } from "../utils/types";
+import { getProductSalePrice } from "../utils/helpers";
 
 export function useProducts() {
 
@@ -20,7 +21,7 @@ export function useProducts() {
             sku: '',
             bar_code: '',
             description: '',
-            buy_price: 0,
+            buy_price: 0.01,
             earn: 0,
             sale_price: 0,
             min_stock: 0,
@@ -139,7 +140,7 @@ export function useProducts() {
         {
             id: 'sale_price',
             label: 'P. venta',
-            accessor: () => 0
+            accessor: (row: Product) => `$${getProductSalePrice(row)}`
         },
         {
             id: 'stock',

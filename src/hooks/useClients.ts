@@ -51,11 +51,11 @@ export function useClients() {
         if (validate()) {
             try {
                 if (showForm === 'NEW') {
-                    await db.suppliers.add({ ...formData, id: undefined });
+                    await db.clients.add({ ...formData, id: undefined });
                     setBodyMessage('Cliente guardado correctamente.');
                     getClients();
                 } else if (showForm === 'EDIT') {
-                    await db.suppliers.update(formData.id, formData);
+                    await db.clients.update(formData.id, formData);
                     setBodyMessage('Cliente editado correctamente.');
                     getClients(filter.page, filter.offset);
                 }

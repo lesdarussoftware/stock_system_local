@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useMemo, useState } from "react";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 
 import { MessageContext } from "../contexts/MessageContext";
 
@@ -8,7 +8,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import { useForm } from "./useForm";
 
 import { db, SaleOrder } from "../utils/db";
-import { ShowFormType } from "../utils/types";
+import { Item, ShowFormType } from "../utils/types";
 
 export function useSales() {
 
@@ -51,7 +51,16 @@ export function useSales() {
             try {
                 // controlar stock
                 if (showForm === 'NEW') {
-                    await db.sale_orders.add({ ...formData, id: undefined, user: auth?.username });
+                    const saleId = await db.sale_orders.add({ ...formData, id: undefined, user: auth?.username });
+                    console.log(saleId, items)
+                    await Promise.all(items.map((i: Item) => db.sale_products.add({
+                        sale_order_id: saleId,
+                        product_id: i.product_id,
+                        amount: i.amount,
+                        product_buy_price: i.product_buy_price,
+                        product_earn: i.product_earn,
+                        product_sale_price: i.product_sale_price
+                    })));
                     setBodyMessage('Venta guardada correctamente.');
                     getSales();
                 } else if (showForm === 'EDIT') {

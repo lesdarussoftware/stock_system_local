@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import { format } from 'date-fns';
 
 import { CommercialTable } from '../products/CommercialTable';
+import { Autocomplete } from '../common/Autocomplete';
 
 import { ShowFormType } from '../../utils/types';
 import { Client, Product } from '../../utils/db';
@@ -32,22 +33,16 @@ export function SaleForm({
 
     return (
         <Form className='mt-4' onSubmit={e => handleSubmit(e)}>
-            <Form.Group controlId="client_id">
-                <Form.Label>Cliente</Form.Label>
-                <Form.Select
-                    name='client_id'
-                    value={formData.client_id}
-                    onChange={e => handleChange({ target: { name: 'client_id', value: e.target.value } })}
-                >
-                    <option value="">Seleccione</option>
-                    {clients.map((c: Client) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                </Form.Select>
-                {errors.client_id?.type === 'required' &&
-                    <Form.Text className="text-danger d-block">
-                        * El cliente es requerido.
-                    </Form.Text>
-                }
-            </Form.Group>
+            <Autocomplete
+                options={clients.map(c => ({ id: c.id, label: c.name }))}
+                placeholder='Ingrese cliente...'
+                onChange={value => handleChange({ target: { name: 'client_id', value } })}
+            />
+            {errors.client_id?.type === 'required' &&
+                <Form.Text className="text-danger d-block">
+                    * El cliente es requerido.
+                </Form.Text>
+            }
             <Form.Group controlId="date" className='my-3'>
                 <Form.Label>Fecha</Form.Label>
                 <Form.Control
@@ -81,7 +76,7 @@ export function SaleForm({
             <div className='mt-5 d-flex justify-content-center gap-3'>
                 <Button variant="secondary" type="button" className='w-25' onClick={() => {
                     setShowForm(null);
-                    setShowForm(null);
+                    setItems([]);
                     reset();
                 }}>
                     Cancelar

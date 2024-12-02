@@ -2,7 +2,12 @@
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 
+import { DeleteIcon } from '../svg/DeleteIcon';
+import { Autocomplete } from '../common/Autocomplete';
+
 import { Product } from '../../utils/db';
+import { getItemSalePrice } from '../../utils/helpers';
+import { Item } from '../../utils/types';
 
 type CommercialTableProps = {
     products: Product[];
@@ -42,12 +47,15 @@ export function CommercialTable({ products, items, setItems }: CommercialTablePr
     return (
         <>
             <h3 className='mt-4'>Artículos</h3>
-            <Form.Group controlId="product" className='mb-2 w-25'>
-                <Form.Select name='product' onChange={e => handleAdd(+e.target.value)}>
-                    <option value="">Seleccione</option>
-                    {products.map((p: Product) => <option key={p.id} value={p.id}>{p.name}</option>)}
-                </Form.Select>
-            </Form.Group>
+            <div className='mb-2'>
+                <Autocomplete
+                    options={products
+                        .filter(p => !items.map((i: Item) => i.product_id).includes(p.id))
+                        .map(p => ({ id: p.id, label: p.name }))}
+                    placeholder='Ingrese nombre o sku del producto...'
+                    onChange={value => handleAdd(+value)}
+                />
+            </div>
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -81,14 +89,14 @@ export function CommercialTable({ products, items, setItems }: CommercialTablePr
                                             onChange={(e: any) => handleChangeAmount(e.target.value, product.id)}
                                         />
                                     </td>
-                                    <td>{+item.product_sale_price * +item.amount}</td>
+                                    <td>{(getItemSalePrice(item) * +item.amount).toFixed(2)}</td>
                                     <td>
                                         <button
                                             type="button"
-                                            className="btn btn-danger btn-sm me-2"
+                                            className="btn btn-danger btn-sm d-flex align-items-center"
                                             onClick={() => handleDelete(product.id)}
                                         >
-                                            Eliminar
+                                            <DeleteIcon />
                                         </button>
                                     </td>
                                 </tr>

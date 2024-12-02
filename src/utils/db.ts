@@ -117,8 +117,8 @@ interface SaleProduct {
     product_buy_price: number;
     product_earn: number;
     product_sale_price?: number;
-    created_at: Date;
-    updated_at: Date;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 const db = new Dexie('StockDatabase') as Dexie & {
