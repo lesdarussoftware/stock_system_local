@@ -8,7 +8,7 @@ import { MessageContext } from "../contexts/MessageContext";
 import { useForm } from "./useForm";
 
 import { db, BuyOrder } from "../utils/db";
-import { ShowFormType } from "../utils/types";
+import { Item, ShowFormType } from "../utils/types";
 
 export function usePurchases() {
 
@@ -32,15 +32,23 @@ export function usePurchases() {
     const [showForm, setShowForm] = useState<ShowFormType>(null);
     const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
     const [totalRows, setTotalRows] = useState<number>(0);
+    const [items, setItems] = useState<any[]>([]);
+    const [idsToDelete, setIdsToDelete] = useState<number[]>([]);
 
     async function getPurchases(page: number = 1, offset: number = 50) {
         const start = (page - 1) * offset;
-        const [data, count] = await Promise.all([
+        const [data, count, suppliers] = await Promise.all([
             db.buy_orders.orderBy('id').reverse().offset(start).limit(offset).toArray(),
-            db.buy_orders.count()
+            db.buy_orders.count(),
+            db.suppliers.toArray(),
         ]);
         setTotalRows(count);
-        setPurchases(data);
+        setPurchases(data.map(p => ({ ...p, supplier: suppliers.find(s => s.id === +p.supplier_id)!.name })));
+    }
+
+    async function getBuyProducts(buy_order_id: number) {
+        const data = await db.buy_products.where('buy_order_id').equals(+buy_order_id).toArray();
+        setItems(data);
     }
 
     async function handleSubmit(e: any) {
@@ -49,16 +57,29 @@ export function usePurchases() {
         if (validate()) {
             try {
                 if (showForm === 'NEW') {
-                    await db.buy_orders.add({ ...formData, id: undefined, user: auth?.username });
+                    const purchaseId = await db.buy_orders.add({ ...formData, id: undefined, user: auth?.username });
+                    await db.buy_products.bulkAdd(items.map((i: Item) => ({
+                        buy_order_id: purchaseId,
+                        product_id: i.product_id,
+                        amount: i.amount,
+                        product_buy_price: i.product_buy_price
+                    })));
                     setBodyMessage('Compra guardada correctamente.');
                     getPurchases();
                 } else if (showForm === 'EDIT') {
-                    await db.buy_orders.update(formData.id, formData);
+                    await Promise.all([
+                        db.buy_orders.update(formData.id, formData),
+                        db.buy_products.bulkDelete(idsToDelete),
+                        db.buy_products.bulkUpdate(items.filter(i => i.id).map(i => ({ key: i.id, changes: i }))),
+                        db.buy_products.bulkAdd(items.filter(i => !i.id))
+                    ]);
                     setBodyMessage('Compra editada correctamente.');
                     getPurchases(filter.page, filter.offset);
                 }
                 setSeverity('SUCCESS');
                 setShowForm(null);
+                setItems([]);
+                setIdsToDelete([]);
                 reset();
             } catch (e) {
                 setSeverity('ERROR');
@@ -71,7 +92,10 @@ export function usePurchases() {
 
     async function deletePurchase() {
         try {
-            await db.buy_orders.delete(+purchaseFormData.formData.id);
+            await Promise.all([
+                db.buy_orders.delete(+purchaseFormData.formData.id),
+                db.buy_orders.bulkDelete(items.map(i => i.id))
+            ]);
             setBodyMessage('Compra eliminada correctamente.');
             setSeverity('SUCCESS');
             getPurchases(filter.page, filter.offset);
@@ -87,6 +111,8 @@ export function usePurchases() {
     function handleClose() {
         purchaseFormData.reset();
         setShowForm(null);
+        setItems([]);
+        setIdsToDelete([]);
     }
 
     const columns = useMemo(() => [
@@ -132,6 +158,11 @@ export function usePurchases() {
         filter,
         setFilter,
         totalRows,
-        handleClose
+        handleClose,
+        items,
+        setItems,
+        getBuyProducts,
+        idsToDelete,
+        setIdsToDelete
     }
 }

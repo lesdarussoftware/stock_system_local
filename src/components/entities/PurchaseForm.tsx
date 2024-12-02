@@ -3,44 +3,62 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { format } from 'date-fns';
 
+import { Autocomplete } from '../common/Autocomplete';
+import { CommercialTable } from '../products/CommercialTable';
+
 import { ShowFormType } from '../../utils/types';
-import { Supplier } from '../../utils/db';
+import { Product, Supplier } from '../../utils/db';
 
 type PurchaseFormProps = {
+    showForm: ShowFormType;
     purchaseFormData: any;
     setShowForm: (value: ShowFormType) => void;
     handleSubmit: (e: any) => void
     suppliers: Supplier[];
+    products: Product[];
+    items: any;
+    setItems: (value: any) => void;
+    idsToDelete: number[];
+    setIdsToDelete: any;
 }
 
-export function PurchaseForm({ purchaseFormData, setShowForm, handleSubmit, suppliers }: PurchaseFormProps) {
+export function PurchaseForm({
+    showForm,
+    purchaseFormData,
+    setShowForm,
+    handleSubmit,
+    suppliers,
+    products,
+    items,
+    setItems,
+    idsToDelete,
+    setIdsToDelete
+}: PurchaseFormProps) {
 
     const { errors, handleChange, reset, formData } = purchaseFormData;
 
     return (
         <Form className='mt-4' onSubmit={e => handleSubmit(e)}>
-            <Form.Group controlId="supplier_id">
-                <Form.Label>Proveedor</Form.Label>
-                <Form.Select
-                    name='supplier_id'
-                    value={formData.supplier_id}
-                    onChange={e => handleChange({ target: { name: 'supplier_id', value: e.target.value } })}
-                >
-                    <option value="">Seleccione</option>
-                    {suppliers.map((s: Supplier) => <option key={s.id} value={s.id}>{s.name}</option>)}
-                </Form.Select>
-                {errors.supplier_id?.type === 'required' &&
-                    <Form.Text className="text-danger d-block">
-                        * El proveedor es requerido.
-                    </Form.Text>
-                }
-            </Form.Group>
+            <h4 className='mb-2'>Proveedor: {suppliers.find(s => s.id === +formData.supplier_id)?.name}</h4>
+            {(showForm === 'NEW' || showForm === 'EDIT') &&
+                <Autocomplete
+                    options={suppliers.map(s => ({ id: s.id, label: s.name }))}
+                    placeholder='Ingrese el nombre del proveedor...'
+                    onChange={value => handleChange({ target: { name: 'supplier_id', value } })}
+                />
+            }
+            {errors.supplier_id?.type === 'required' &&
+                <Form.Text className="text-danger d-block">
+                    * El proveedor es requerido.
+                </Form.Text>
+            }
             <Form.Group controlId="date" className='my-3'>
                 <Form.Label>Fecha</Form.Label>
                 <Form.Control
                     type='date'
                     name='date'
                     value={formData.date}
+                    disabled={showForm === 'VIEW'}
                     onChange={e => {
                         const formatted = format(e.target.value.replace('-', '/'), 'yyyy-MM-dd');
                         const value = format(new Date(formatted + 'T00:00:00'), 'yyyy-MM-dd');
@@ -53,6 +71,7 @@ export function PurchaseForm({ purchaseFormData, setShowForm, handleSubmit, supp
                 <Form.Select
                     name='status'
                     value={formData.status}
+                    disabled={showForm === 'VIEW'}
                     onChange={e => handleChange({ target: { name: 'status', value: e.target.value } })}
                 >
                     <option value="PENDIENTE">PENDIENTE</option>
@@ -60,17 +79,28 @@ export function PurchaseForm({ purchaseFormData, setShowForm, handleSubmit, supp
                     <option value="CANCELADA">CANCELADA</option>
                 </Form.Select>
             </Form.Group>
+            <CommercialTable
+                items={items}
+                setItems={setItems}
+                products={products}
+                idsToDelete={idsToDelete}
+                setIdsToDelete={setIdsToDelete}
+                showForm={showForm}
+                type='PURCHASE'
+            />
             <div className='mt-5 d-flex justify-content-center gap-3'>
                 <Button variant="secondary" type="button" className='w-25' onClick={() => {
                     setShowForm(null);
                     setShowForm(null);
                     reset();
                 }}>
-                    Cancelar
+                    {showForm === 'VIEW' ? 'Volver' : 'Cancelar'}
                 </Button>
-                <Button variant="primary" type="submit" className='w-25'>
-                    Guardar
-                </Button>
+                {(showForm === 'NEW' || showForm === 'EDIT') &&
+                    <Button variant="primary" type="submit" className='w-25' disabled={formData.disabled || items.length === 0}>
+                        Guardar
+                    </Button>
+                }
             </div>
         </Form>
     );

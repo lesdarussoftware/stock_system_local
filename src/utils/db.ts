@@ -95,8 +95,8 @@ interface BuyProduct {
     product_id: number;
     amount: number;
     product_buy_price: number;
-    created_at: Date;
-    updated_at: Date;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 interface SaleOrder {

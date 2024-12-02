@@ -40,7 +40,7 @@ export function Sales() {
     useEffect(() => {
         getClients();
         getProducts();
-    }, [])
+    }, []);
 
     useEffect(() => {
         const { page, offset } = filter;
@@ -49,7 +49,7 @@ export function Sales() {
 
     useEffect(() => {
         if (showForm === 'EDIT' || showForm === 'VIEW' || showForm === 'DELETE') getSaleProducts(formData.id);
-    }, [formData, showForm])
+    }, [formData, showForm]);
 
     return (
         <Layout>

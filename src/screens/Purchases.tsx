@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 
 import { usePurchases } from "../hooks/usePurchases";
 import { useSuppliers } from "../hooks/useSuppliers";
+import { useProducts } from "../hooks/useProducts";
 
 import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
@@ -25,13 +26,20 @@ export function Purchases() {
         setFilter,
         totalRows,
         handleClose,
-        deletePurchase
+        deletePurchase,
+        items,
+        setItems,
+        getBuyProducts,
+        idsToDelete,
+        setIdsToDelete
     } = usePurchases();
     const { formData, setFormData } = purchaseFormData;
     const { suppliers, getSuppliers } = useSuppliers();
+    const { products, getProducts } = useProducts();
 
     useEffect(() => {
         getSuppliers();
+        getProducts();
     }, [])
 
     useEffect(() => {
@@ -39,16 +47,31 @@ export function Purchases() {
         getPurchases(page, offset);
     }, [filter]);
 
+    useEffect(() => {
+        if (showForm === 'EDIT' || showForm === 'VIEW' || showForm === 'DELETE') getBuyProducts(formData.id);
+    }, [formData, showForm]);
+
     return (
         <Layout>
-            {showForm === 'NEW' || showForm === 'EDIT' ?
+            {showForm === 'NEW' || showForm === 'EDIT' || showForm === 'VIEW' ?
                 <>
-                    <h2>{showForm === 'NEW' ? 'Nueva compra' : `Editar compra #${formData.id}`}</h2>
+                    <h2>
+                        {showForm === 'NEW' ? 'Nueva compra' :
+                            showForm === 'EDIT' ? `Editar compra #${formData.id}` :
+                                `Compra #${formData.id}`
+                        }
+                    </h2>
                     <PurchaseForm
+                        showForm={showForm}
                         purchaseFormData={purchaseFormData}
                         setShowForm={setShowForm}
                         handleSubmit={handleSubmit}
                         suppliers={suppliers}
+                        items={items}
+                        setItems={setItems}
+                        products={products}
+                        idsToDelete={idsToDelete}
+                        setIdsToDelete={setIdsToDelete}
                     />
                 </> :
                 <>

@@ -16,6 +16,7 @@ type CommercialTableProps = {
     setItems: (value: any) => void;
     idsToDelete: number[];
     setIdsToDelete: any;
+    type: 'SALE' | 'PURCHASE'
 }
 
 export function CommercialTable({
@@ -24,7 +25,8 @@ export function CommercialTable({
     items,
     setItems,
     idsToDelete,
-    setIdsToDelete
+    setIdsToDelete,
+    type
 }: CommercialTableProps) {
 
     const handleAdd = (pId: number) => {
@@ -107,7 +109,11 @@ export function CommercialTable({
                                             onChange={(e: any) => handleChangeAmount(e.target.value, product.id)}
                                         />
                                     </td>
-                                    <td>${(getItemSalePrice(item) * +item.amount).toFixed(2)}</td>
+                                    <td>
+                                        {type === 'PURCHASE' ?
+                                            `$${(+item.product_buy_price * +item.amount).toFixed(2)}` :
+                                            `$${(getItemSalePrice(item) * +item.amount).toFixed(2)}`}
+                                    </td>
                                     {(showForm === 'NEW' || showForm === 'EDIT') &&
                                         <td>
                                             <button
