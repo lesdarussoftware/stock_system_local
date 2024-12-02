@@ -33,15 +33,22 @@ export function useSales() {
     const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
     const [totalRows, setTotalRows] = useState<number>(0);
     const [items, setItems] = useState<any[]>([]);
+    const [idsToDelete, setIdsToDelete] = useState<number[]>([]);
 
     async function getSales(page: number = 1, offset: number = 50) {
         const start = (page - 1) * offset;
-        const [data, count] = await Promise.all([
+        const [data, count, clients] = await Promise.all([
             db.sale_orders.orderBy('id').reverse().offset(start).limit(offset).toArray(),
-            db.sale_orders.count()
+            db.sale_orders.count(),
+            db.clients.toArray()
         ]);
         setTotalRows(count);
-        setSales(data);
+        setSales(data.map(s => ({ ...s, client: clients.find(c => c.id === +s.client_id)!.name })));
+    }
+
+    async function getSaleProducts(sale_order_id: number) {
+        const data = await db.sale_products.where('sale_order_id').equals(+sale_order_id).toArray();
+        setItems(data);
     }
 
     async function handleSubmit(e: any) {
@@ -52,8 +59,7 @@ export function useSales() {
                 // controlar stock
                 if (showForm === 'NEW') {
                     const saleId = await db.sale_orders.add({ ...formData, id: undefined, user: auth?.username });
-                    console.log(saleId, items)
-                    await Promise.all(items.map((i: Item) => db.sale_products.add({
+                    await db.sale_products.bulkAdd(items.map((i: Item) => ({
                         sale_order_id: saleId,
                         product_id: i.product_id,
                         amount: i.amount,
@@ -64,12 +70,19 @@ export function useSales() {
                     setBodyMessage('Venta guardada correctamente.');
                     getSales();
                 } else if (showForm === 'EDIT') {
-                    await db.sale_orders.update(formData.id, formData);
+                    await Promise.all([
+                        db.sale_orders.update(formData.id, formData),
+                        db.sale_products.bulkDelete(idsToDelete),
+                        db.sale_products.bulkUpdate(items.filter(i => i.id).map(i => ({ key: i.id, changes: i }))),
+                        db.sale_products.bulkAdd(items.filter(i => !i.id))
+                    ]);
                     setBodyMessage('Venta editada correctamente.');
                     getSales(filter.page, filter.offset);
                 }
                 setSeverity('SUCCESS');
                 setShowForm(null);
+                setItems([]);
+                setIdsToDelete([]);
                 reset();
             } catch (e) {
                 setSeverity('ERROR');
@@ -82,7 +95,10 @@ export function useSales() {
 
     async function deleteSale() {
         try {
-            await db.sale_orders.delete(+saleFormData.formData.id);
+            await Promise.all([
+                db.sale_orders.delete(+saleFormData.formData.id),
+                db.sale_products.bulkDelete(items.map(i => i.id))
+            ]);
             setBodyMessage('Venta eliminada correctamente.');
             setSeverity('SUCCESS');
             getSales(filter.page, filter.offset);
@@ -98,6 +114,8 @@ export function useSales() {
     function handleClose() {
         saleFormData.reset();
         setShowForm(null);
+        setItems([]);
+        setIdsToDelete([]);
     }
 
     const columns = useMemo(() => [
@@ -145,6 +163,9 @@ export function useSales() {
         totalRows,
         handleClose,
         items,
-        setItems
+        setItems,
+        getSaleProducts,
+        idsToDelete,
+        setIdsToDelete
     }
 }

@@ -28,7 +28,10 @@ export function Sales() {
         handleClose,
         deleteSale,
         items,
-        setItems
+        setItems,
+        getSaleProducts,
+        idsToDelete,
+        setIdsToDelete
     } = useSales();
     const { formData, setFormData } = saleFormData;
     const { clients, getClients } = useClients();
@@ -44,12 +47,22 @@ export function Sales() {
         getSales(page, offset);
     }, [filter]);
 
+    useEffect(() => {
+        if (showForm === 'EDIT' || showForm === 'VIEW' || showForm === 'DELETE') getSaleProducts(formData.id);
+    }, [formData, showForm])
+
     return (
         <Layout>
-            {showForm === 'NEW' || showForm === 'EDIT' ?
+            {showForm === 'NEW' || showForm === 'EDIT' || showForm === 'VIEW' ?
                 <>
-                    <h2>{showForm === 'NEW' ? 'Nueva venta' : `Editar venta #${formData.id}`}</h2>
+                    <h2>
+                        {showForm === 'NEW' ? 'Nueva venta' :
+                            showForm === 'EDIT' ? `Editar venta #${formData.id}` :
+                                `Venta #${formData.id}`
+                        }
+                    </h2>
                     <SaleForm
+                        showForm={showForm}
                         saleFormData={saleFormData}
                         setShowForm={setShowForm}
                         handleSubmit={handleSubmit}
@@ -57,6 +70,8 @@ export function Sales() {
                         items={items}
                         setItems={setItems}
                         products={products}
+                        idsToDelete={idsToDelete}
+                        setIdsToDelete={setIdsToDelete}
                     />
                 </> :
                 <>

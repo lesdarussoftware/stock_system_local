@@ -45,7 +45,9 @@ export function useUsers() {
                     setBodyMessage('Credenciales inválidas.');
                     setOpenMessage(true);
                 } else {
-                    setAuth({ id: user.id, username: user.username });
+                    const authData = { id: user.id, username: user.username }
+                    setAuth(authData);
+                    localStorage.setItem('auth', JSON.stringify(authData));
                     navigate('/products');
                 }
             } catch (error) {

@@ -7,15 +7,25 @@ import { Autocomplete } from '../common/Autocomplete';
 
 import { Product } from '../../utils/db';
 import { getItemSalePrice } from '../../utils/helpers';
-import { Item } from '../../utils/types';
+import { Item, ShowFormType } from '../../utils/types';
 
 type CommercialTableProps = {
+    showForm: ShowFormType,
     products: Product[];
     items: any;
     setItems: (value: any) => void;
+    idsToDelete: number[];
+    setIdsToDelete: any;
 }
 
-export function CommercialTable({ products, items, setItems }: CommercialTableProps) {
+export function CommercialTable({
+    showForm,
+    products,
+    items,
+    setItems,
+    idsToDelete,
+    setIdsToDelete
+}: CommercialTableProps) {
 
     const handleAdd = (pId: number) => {
         setItems([
@@ -40,21 +50,28 @@ export function CommercialTable({ products, items, setItems }: CommercialTablePr
         ].sort((a: any, b: any) => a.product_id - b.product_id));
     }
 
-    const handleDelete = (pId: number) => {
-        setItems(items.filter((i: any) => i.product_id !== pId));
+    const handleDelete = (id: number) => {
+        if (showForm === 'NEW') {
+            setItems(items.filter((i: any) => i.product_id !== id));
+        } else {
+            setItems(items.filter((i: any) => i.id !== id));
+        }
+        setIdsToDelete([id, ...idsToDelete]);
     }
 
     return (
         <>
             <h3 className='mt-4'>Artículos</h3>
             <div className='mb-2'>
-                <Autocomplete
-                    options={products
-                        .filter(p => !items.map((i: Item) => i.product_id).includes(p.id))
-                        .map(p => ({ id: p.id, label: p.name }))}
-                    placeholder='Ingrese nombre o sku del producto...'
-                    onChange={value => handleAdd(+value)}
-                />
+                {(showForm === 'NEW' || showForm === 'EDIT') &&
+                    <Autocomplete
+                        options={products
+                            .filter(p => !items.map((i: Item) => i.product_id).includes(p.id))
+                            .map(p => ({ id: p.id, label: p.name }))}
+                        placeholder='Ingrese nombre o sku del producto...'
+                        onChange={value => handleAdd(+value)}
+                    />
+                }
             </div>
             <Table striped bordered hover>
                 <thead>
@@ -63,7 +80,7 @@ export function CommercialTable({ products, items, setItems }: CommercialTablePr
                         <th>Nombre</th>
                         <th>Cantidad</th>
                         <th>Total det.</th>
-                        <th />
+                        {(showForm === 'NEW' || showForm === 'EDIT') && <th />}
                     </tr>
                 </thead>
                 <tbody>
@@ -86,19 +103,22 @@ export function CommercialTable({ products, items, setItems }: CommercialTablePr
                                             step={1}
                                             name='amount'
                                             value={+item.amount}
+                                            disabled={showForm === 'VIEW'}
                                             onChange={(e: any) => handleChangeAmount(e.target.value, product.id)}
                                         />
                                     </td>
-                                    <td>{(getItemSalePrice(item) * +item.amount).toFixed(2)}</td>
-                                    <td>
-                                        <button
-                                            type="button"
-                                            className="btn btn-danger btn-sm d-flex align-items-center"
-                                            onClick={() => handleDelete(product.id)}
-                                        >
-                                            <DeleteIcon />
-                                        </button>
-                                    </td>
+                                    <td>${(getItemSalePrice(item) * +item.amount).toFixed(2)}</td>
+                                    {(showForm === 'NEW' || showForm === 'EDIT') &&
+                                        <td>
+                                            <button
+                                                type="button"
+                                                className="btn btn-danger btn-sm d-flex align-items-center"
+                                                onClick={() => handleDelete(showForm === 'NEW' ? product.id : item.id)}
+                                            >
+                                                <DeleteIcon />
+                                            </button>
+                                        </td>
+                                    }
                                 </tr>
                             )
                         })

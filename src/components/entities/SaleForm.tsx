@@ -10,6 +10,7 @@ import { ShowFormType } from '../../utils/types';
 import { Client, Product } from '../../utils/db';
 
 type SaleFormProps = {
+    showForm: ShowFormType;
     saleFormData: any;
     setShowForm: (value: ShowFormType) => void;
     handleSubmit: (e: any) => void
@@ -17,27 +18,35 @@ type SaleFormProps = {
     products: Product[];
     items: any;
     setItems: (value: any) => void;
+    idsToDelete: number[];
+    setIdsToDelete: any;
 }
 
 export function SaleForm({
+    showForm,
     saleFormData,
     setShowForm,
     handleSubmit,
     clients,
     products,
     items,
-    setItems
+    setItems,
+    idsToDelete,
+    setIdsToDelete
 }: SaleFormProps) {
 
     const { errors, handleChange, reset, formData } = saleFormData;
 
     return (
         <Form className='mt-4' onSubmit={e => handleSubmit(e)}>
-            <Autocomplete
-                options={clients.map(c => ({ id: c.id, label: c.name }))}
-                placeholder='Ingrese cliente...'
-                onChange={value => handleChange({ target: { name: 'client_id', value } })}
-            />
+            <h4 className='mb-2'>Cliente: {clients.find(c => c.id === +formData.client_id)?.name}</h4>
+            {(showForm === 'NEW' || showForm === 'EDIT') &&
+                <Autocomplete
+                    options={clients.map(c => ({ id: c.id, label: c.name }))}
+                    placeholder='Ingrese el nombre del cliente...'
+                    onChange={value => handleChange({ target: { name: 'client_id', value } })}
+                />
+            }
             {errors.client_id?.type === 'required' &&
                 <Form.Text className="text-danger d-block">
                     * El cliente es requerido.
@@ -49,6 +58,7 @@ export function SaleForm({
                     type='date'
                     name='date'
                     value={formData.date}
+                    disabled={showForm === 'VIEW'}
                     onChange={e => {
                         const formatted = format(e.target.value.replace('-', '/'), 'yyyy-MM-dd');
                         const value = format(new Date(formatted + 'T00:00:00'), 'yyyy-MM-dd');
@@ -61,6 +71,7 @@ export function SaleForm({
                 <Form.Select
                     name='status'
                     value={formData.status}
+                    disabled={showForm === 'VIEW'}
                     onChange={e => handleChange({ target: { name: 'status', value: e.target.value } })}
                 >
                     <option value="PENDIENTE">PENDIENTE</option>
@@ -72,18 +83,24 @@ export function SaleForm({
                 items={items}
                 setItems={setItems}
                 products={products}
+                idsToDelete={idsToDelete}
+                setIdsToDelete={setIdsToDelete}
+                showForm={showForm}
             />
             <div className='mt-5 d-flex justify-content-center gap-3'>
                 <Button variant="secondary" type="button" className='w-25' onClick={() => {
                     setShowForm(null);
                     setItems([]);
+                    setIdsToDelete([]);
                     reset();
                 }}>
-                    Cancelar
+                    {showForm === 'VIEW' ? 'Volver' : 'Cancelar'}
                 </Button>
-                <Button variant="primary" type="submit" className='w-25' disabled={formData.disabled || items.length === 0}>
-                    Guardar
-                </Button>
+                {(showForm === 'NEW' || showForm === 'EDIT') &&
+                    <Button variant="primary" type="submit" className='w-25' disabled={formData.disabled || items.length === 0}>
+                        Guardar
+                    </Button>
+                }
             </div>
         </Form>
     );

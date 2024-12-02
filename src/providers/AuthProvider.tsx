@@ -8,7 +8,9 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
 
-    const [auth, setAuth] = useState<AuthData | null>(null);
+    const [auth, setAuth] = useState<AuthData | null>(
+        localStorage.getItem('auth') ?
+            JSON.parse(localStorage.getItem('auth') ?? '{}') : null);
 
     return (
         <AuthContext.Provider value={{ auth, setAuth }}>
