@@ -9,6 +9,8 @@ import { useForm } from "./useForm";
 
 import { db, SaleOrder } from "../utils/db";
 import { Item, ShowFormType } from "../utils/types";
+import { theresStock } from "../middlewares/product";
+import { useProducts } from "./useProducts";
 
 export function useSales() {
 
@@ -27,6 +29,7 @@ export function useSales() {
             client_id: { required: true }
         }
     })
+    const { products, getProducts } = useProducts();
 
     const [sales, setSales] = useState<SaleOrder[]>([]);
     const [showForm, setShowForm] = useState<ShowFormType>(null);
@@ -53,42 +56,49 @@ export function useSales() {
 
     async function handleSubmit(e: any) {
         e.preventDefault();
+        await getProducts();
         const { formData, validate, reset } = saleFormData;
         if (validate()) {
             try {
-                // controlar stock
-                if (showForm === 'NEW') {
-                    const saleId = await db.sale_orders.add({ ...formData, id: undefined, user: auth?.username });
-                    await db.sale_products.bulkAdd(items.map((i: Item) => ({
-                        sale_order_id: saleId,
-                        product_id: i.product_id,
-                        amount: i.amount,
-                        product_buy_price: i.product_buy_price,
-                        product_earn: i.product_earn,
-                        product_sale_price: i.product_sale_price
-                    })));
-                    setBodyMessage('Venta guardada correctamente.');
-                    getSales();
-                } else if (showForm === 'EDIT') {
-                    await Promise.all([
-                        db.sale_orders.update(formData.id, formData),
-                        db.sale_products.bulkDelete(idsToDelete),
-                        db.sale_products.bulkUpdate(items.filter(i => i.id).map(i => ({ key: i.id, changes: i }))),
-                        db.sale_products.bulkAdd(items.filter(i => !i.id))
-                    ]);
-                    setBodyMessage('Venta editada correctamente.');
-                    getSales(filter.page, filter.offset);
+                if (theresStock(products, items)) {
+                    if (showForm === 'NEW') {
+                        const saleId = await db.sale_orders.add({ ...formData, id: undefined, user: auth?.username });
+                        await db.sale_products.bulkAdd(items.map((i: Item) => ({
+                            sale_order_id: saleId,
+                            product_id: i.product_id,
+                            amount: i.amount,
+                            product_buy_price: i.product_buy_price,
+                            product_earn: i.product_earn,
+                            product_sale_price: i.product_sale_price
+                        })));
+                        setBodyMessage('Venta guardada correctamente.');
+                        getSales();
+                    } else if (showForm === 'EDIT') {
+                        await Promise.all([
+                            db.sale_orders.update(formData.id, formData),
+                            db.sale_products.bulkDelete(idsToDelete),
+                            db.sale_products.bulkUpdate(items.filter(i => i.id).map(i => ({ key: i.id, changes: i }))),
+                            db.sale_products.bulkAdd(items.filter(i => !i.id))
+                        ]);
+                        setBodyMessage('Venta editada correctamente.');
+                        getSales(filter.page, filter.offset);
+                    }
+                    setHeaderMessage('Éxito');
+                    setSeverity('SUCCESS');
+                    setShowForm(null);
+                    setItems([]);
+                    setIdsToDelete([]);
+                    reset();
+                } else {
+                    setHeaderMessage('Error');
+                    setSeverity('ERROR');
+                    setBodyMessage('Hay productos sin stock disponible.');
                 }
-                setSeverity('SUCCESS');
-                setShowForm(null);
-                setItems([]);
-                setIdsToDelete([]);
-                reset();
             } catch (e) {
+                setHeaderMessage('Error');
                 setSeverity('ERROR');
                 setBodyMessage('Hubo un error al intentar guardar la venta.');
             }
-            setHeaderMessage('Éxito');
             setOpenMessage(true);
         }
     }
