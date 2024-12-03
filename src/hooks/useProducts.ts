@@ -8,7 +8,7 @@ import { useForm } from "./useForm";
 import { skuDoesNotExist } from "../middlewares/product";
 import { db, Product } from "../utils/db";
 import { ShowFormType } from "../utils/types";
-import { getProductSalePrice } from "../utils/helpers";
+import { getProductSalePrice, getStock } from "../utils/helpers";
 
 export function useProducts() {
 
@@ -47,17 +47,25 @@ export function useProducts() {
 
     async function getProducts(page: number = 1, offset: number = 50) {
         const start = (page - 1) * offset;
-        const [data, count, categories, suppliers] = await Promise.all([
+        const [data, count, categories, suppliers, saleProducts, buyProducts, movements] = await Promise.all([
             db.products.orderBy('id').reverse().offset(start).limit(offset).toArray(),
             db.products.count(),
             db.categories.toArray(),
-            db.suppliers.toArray()
+            db.suppliers.toArray(),
+            db.sale_products.toArray(),
+            db.buy_products.toArray(),
+            db.movements.toArray()
         ]);
         setTotalRows(count);
         setProducts(data.filter(p => p.is_active).map(p => ({
             ...p,
             category: categories.find(c => c.id === +p.category_id)?.name || 'Sin categoría',
-            supplier: suppliers.find(s => s.id === +p.supplier_id)?.name || 'Sin proveedor'
+            supplier: suppliers.find(s => s.id === +p.supplier_id)?.name || 'Sin proveedor',
+            stock: getStock(
+                saleProducts.filter(sp => +sp.product_id === +p.id),
+                buyProducts.filter(sp => +sp.product_id === +p.id),
+                movements.filter(sp => +sp.product_id === +p.id)
+            )
         })));
     }
 
@@ -145,7 +153,7 @@ export function useProducts() {
         {
             id: 'stock',
             label: 'Stock',
-            accessor: () => 0
+            accessor: 'stock'
         },
         {
             id: 'min_stock',
