@@ -8,6 +8,7 @@ import { Autocomplete } from '../common/Autocomplete';
 
 import { ShowFormType } from '../../utils/types';
 import { Client, Product } from '../../utils/db';
+import { getSaleOrPurchaseTotal } from '../../utils/helpers';
 
 type SaleFormProps = {
     showForm: ShowFormType;
@@ -88,6 +89,7 @@ export function SaleForm({
                 showForm={showForm}
                 type='SALE'
             />
+            <h4>Total: {`$${getSaleOrPurchaseTotal(items)}`}</h4>
             <div className='mt-5 d-flex justify-content-center gap-3'>
                 <Button variant="secondary" type="button" className='w-25' onClick={() => {
                     setShowForm(null);

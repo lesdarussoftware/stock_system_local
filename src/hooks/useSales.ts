@@ -11,6 +11,7 @@ import { db, SaleOrder } from "../utils/db";
 import { Item, ShowFormType } from "../utils/types";
 import { theresStock } from "../middlewares/product";
 import { useProducts } from "./useProducts";
+import { getSaleProductsTotal } from "../utils/helpers";
 
 export function useSales() {
 
@@ -40,13 +41,18 @@ export function useSales() {
 
     async function getSales(page: number = 1, offset: number = 50) {
         const start = (page - 1) * offset;
-        const [data, count, clients] = await Promise.all([
+        const [data, count, clients, saleProducts] = await Promise.all([
             db.sale_orders.orderBy('id').reverse().offset(start).limit(offset).toArray(),
             db.sale_orders.count(),
-            db.clients.toArray()
+            db.clients.toArray(),
+            db.sale_products.toArray()
         ]);
         setTotalRows(count);
-        setSales(data.map(s => ({ ...s, client: clients.find(c => c.id === +s.client_id)!.name })));
+        setSales(data.map(s => ({
+            ...s,
+            client: clients.find(c => c.id === +s.client_id)!.name,
+            total: `$${getSaleProductsTotal(saleProducts.filter(sp => +sp.sale_order_id === +s.id))}`
+        })));
     }
 
     async function getSaleProducts(sale_order_id: number) {
@@ -155,6 +161,11 @@ export function useSales() {
             id: 'user',
             label: 'Creada por',
             accessor: 'user'
+        },
+        {
+            id: 'total',
+            label: 'Total',
+            accessor: 'total'
         }
     ], [])
 

@@ -9,6 +9,7 @@ import { useForm } from "./useForm";
 
 import { db, BuyOrder } from "../utils/db";
 import { Item, ShowFormType } from "../utils/types";
+import { getBuyProductsTotal } from "../utils/helpers";
 
 export function usePurchases() {
 
@@ -37,13 +38,18 @@ export function usePurchases() {
 
     async function getPurchases(page: number = 1, offset: number = 50) {
         const start = (page - 1) * offset;
-        const [data, count, suppliers] = await Promise.all([
+        const [data, count, suppliers, buyProducts] = await Promise.all([
             db.buy_orders.orderBy('id').reverse().offset(start).limit(offset).toArray(),
             db.buy_orders.count(),
             db.suppliers.toArray(),
+            db.buy_products.toArray()
         ]);
         setTotalRows(count);
-        setPurchases(data.map(p => ({ ...p, supplier: suppliers.find(s => s.id === +p.supplier_id)!.name })));
+        setPurchases(data.map(p => ({
+            ...p,
+            supplier: suppliers.find(s => s.id === +p.supplier_id)!.name,
+            total: `$${getBuyProductsTotal(buyProducts.filter(bp => +bp.buy_order_id === +p.id))}`
+        })));
     }
 
     async function getBuyProducts(buy_order_id: number) {
@@ -142,6 +148,11 @@ export function usePurchases() {
             id: 'user',
             label: 'Creada por',
             accessor: 'user'
+        },
+        {
+            id: 'total',
+            label: 'Total',
+            accessor: 'total'
         }
     ], [])
 

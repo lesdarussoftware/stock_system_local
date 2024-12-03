@@ -8,6 +8,7 @@ import { CommercialTable } from '../products/CommercialTable';
 
 import { ShowFormType } from '../../utils/types';
 import { Product, Supplier } from '../../utils/db';
+import { getSaleOrPurchaseTotal } from '../../utils/helpers';
 
 type PurchaseFormProps = {
     showForm: ShowFormType;
@@ -88,6 +89,7 @@ export function PurchaseForm({
                 showForm={showForm}
                 type='PURCHASE'
             />
+            <h4>Total: {`$${getSaleOrPurchaseTotal(items)}`}</h4>
             <div className='mt-5 d-flex justify-content-center gap-3'>
                 <Button variant="secondary" type="button" className='w-25' onClick={() => {
                     setShowForm(null);
