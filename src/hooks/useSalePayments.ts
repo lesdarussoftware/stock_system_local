@@ -14,7 +14,14 @@ export function useSalePayments() {
     const { setBodyMessage, setHeaderMessage, setSeverity, setOpenMessage } = useContext(MessageContext);
 
     const salePaymentFormData = useForm({
-        defaultData: { id: '', sale_order_id: '', method: 'EFECTIVO', amount: '', date: new Date(Date.now()) },
+        defaultData: {
+            id: '',
+            sale_order_id: '',
+            method: 'EFECTIVO',
+            amount: '',
+            date: new Date(Date.now()),
+            observations: ''
+        },
         rules: { amount: { required: true }, observations: { maxLength: 55 } }
     });
 

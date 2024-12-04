@@ -2,39 +2,40 @@ import { useEffect } from "react";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
+import { useSalePayments } from "../../hooks/useSalePayments";
+
 import { TableComponent } from "../common/TableComponent";
+import { PaymentForm } from "../entities/PaymentForm";
 
-import { useBuyPayments } from "../../hooks/useBuyPayments";
-
-import { BuyOrder } from "../../utils/db";
+import { SaleOrder } from "../../utils/db";
 import { ShowFormType } from "../../utils/types";
 
-type BuyPaymentsListProps = {
-    buyOrder: BuyOrder;
-    setBuyOrderShowForm: (value: ShowFormType) => void;
+type SalePaymentsListProps = {
+    saleOrder: SaleOrder;
+    setSaleOrderShowForm: (value: ShowFormType) => void;
 }
 
-export function BuyPaymentsList({ buyOrder, setBuyOrderShowForm }: BuyPaymentsListProps) {
+export function SalePaymentsList({ saleOrder, setSaleOrderShowForm }: SalePaymentsListProps) {
 
     const {
-        buyPayments,
-        getBuyPayments,
-        buyPaymentFormData,
+        salePayments,
+        getSalePayments,
+        salePaymentFormData,
         showForm,
         setShowForm,
         handleSubmit,
         columns,
-        setBuyPayments,
+        setSalePayments,
         filter,
         setFilter,
         totalRows,
         handleClose,
-        deleteBuyPayment
-    } = useBuyPayments();
-    const { formData, setFormData } = buyPaymentFormData;
+        deleteSalePayment
+    } = useSalePayments();
+    const { formData, setFormData } = salePaymentFormData;
 
     useEffect(() => {
-        getBuyPayments(buyOrder.id);
+        getSalePayments(saleOrder.id);
     }, []);
 
     return (
@@ -42,27 +43,26 @@ export function BuyPaymentsList({ buyOrder, setBuyOrderShowForm }: BuyPaymentsLi
             {showForm === 'NEW' || showForm === 'EDIT' ?
                 <>
                     <h2>
-                        {showForm === 'NEW' ? `Nuevo pago para la compra #${buyOrder.id}` :
-                            `Editar pago #${formData.id} de la compra #${buyOrder.id}`}
+                        {showForm === 'NEW' ? `Nuevo pago para la venta #${saleOrder.id}` :
+                            `Editar pago #${formData.id} de la venta #${saleOrder.id}`}
                     </h2>
-                    <BuyPaymentForm
-                        buyPaymentFormData={buyPaymentFormData}
-                        showForm={showForm}
+                    <PaymentForm
+                        paymentFormData={salePaymentFormData}
                         setShowForm={setShowForm}
                         handleSubmit={handleSubmit}
                     />
                 </> :
                 <>
                     <div className='d-flex justify-content-between align-items-start'>
-                        <h2>{`Pagos de la compra #${buyOrder.id}`}</h2>
-                        <Button variant="secondary" type="button" onClick={() => setBuyOrderShowForm(null)}>
-                            Volver a lista de compras
+                        <h2>{`Pagos de la venta #${saleOrder.id}`}</h2>
+                        <Button variant="secondary" type="button" onClick={() => setSaleOrderShowForm(null)}>
+                            Volver a lista de ventas
                         </Button>
                     </div>
                     <TableComponent
                         columns={columns}
-                        rows={buyPayments}
-                        setRows={setBuyPayments}
+                        rows={salePayments}
+                        setRows={setSalePayments}
                         filter={filter}
                         setFilter={setFilter}
                         totalRows={totalRows}
@@ -74,7 +74,7 @@ export function BuyPaymentsList({ buyOrder, setBuyOrderShowForm }: BuyPaymentsLi
                     />
                     <Modal show={showForm === 'DELETE'} onHide={handleClose} backdrop="static" keyboard={false}        >
                         <Modal.Header closeButton>
-                            <Modal.Title>{`Borrar pago #${formData.id} de la compra #${buyOrder.id}`}</Modal.Title>
+                            <Modal.Title>{`Borrar pago #${formData.id} de la venta #${saleOrder.id}`}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             Los datos no podrán ser recuperados.
@@ -83,7 +83,7 @@ export function BuyPaymentsList({ buyOrder, setBuyOrderShowForm }: BuyPaymentsLi
                             <Button variant="secondary" onClick={handleClose}>
                                 Cancelar
                             </Button>
-                            <Button variant="danger" onClick={deleteBuyPayment}>Confirmar</Button>
+                            <Button variant="danger" onClick={deleteSalePayment}>Confirmar</Button>
                         </Modal.Footer>
                     </Modal>
                 </>
