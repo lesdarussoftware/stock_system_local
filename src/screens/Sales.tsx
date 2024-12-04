@@ -10,6 +10,7 @@ import { Layout } from "../components/common/Layout";
 import { TableComponent } from "../components/common/TableComponent";
 import { SaleForm } from "../components/entities/SaleForm";
 import { AddIcon } from "../components/svg/AddIcon";
+import { SalePaymentsList } from "../components/payments/SalePaymentsList";
 
 export function Sales() {
 
@@ -73,43 +74,48 @@ export function Sales() {
                         setIdsToDelete={setIdsToDelete}
                     />
                 </> :
-                <>
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                        <h2>Ventas</h2>
-                        <button className="btn btn-primary d-flex align-items-center btn-lg" onClick={() => setShowForm('NEW')}>
-                            <AddIcon />
-                        </button>
-                    </div>
-                    <TableComponent
-                        columns={columns}
-                        rows={sales}
-                        setRows={setSales}
-                        filter={filter}
-                        setFilter={setFilter}
-                        totalRows={totalRows}
-                        setFormData={setFormData}
-                        setShowForm={setShowForm}
-                        actions
-                        showViewAction
-                        showEditAction
-                        showDeleteAction
-                        showAdjustAction
-                    />
-                    <Modal show={showForm === 'DELETE'} onHide={handleClose} backdrop="static" keyboard={false}        >
-                        <Modal.Header closeButton>
-                            <Modal.Title>{`Borrar venta #${formData.id}`}</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            Los datos no podrán ser recuperados.
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={handleClose}>
-                                Cancelar
-                            </Button>
-                            <Button variant="danger" onClick={deleteSale}>Confirmar</Button>
-                        </Modal.Footer>
-                    </Modal>
-                </>
+                showForm === 'ADJUST' ?
+                    <SalePaymentsList
+                        saleOrder={formData}
+                        setSaleOrderShowForm={setShowForm}
+                    /> :
+                    <>
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                            <h2>Ventas</h2>
+                            <button className="btn btn-primary d-flex align-items-center btn-lg" onClick={() => setShowForm('NEW')}>
+                                <AddIcon />
+                            </button>
+                        </div>
+                        <TableComponent
+                            columns={columns}
+                            rows={sales}
+                            setRows={setSales}
+                            filter={filter}
+                            setFilter={setFilter}
+                            totalRows={totalRows}
+                            setFormData={setFormData}
+                            setShowForm={setShowForm}
+                            actions
+                            showViewAction
+                            showEditAction
+                            showDeleteAction
+                            showAdjustAction
+                        />
+                        <Modal show={showForm === 'DELETE'} onHide={handleClose} backdrop="static" keyboard={false}        >
+                            <Modal.Header closeButton>
+                                <Modal.Title>{`Borrar venta #${formData.id}`}</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                Los datos no podrán ser recuperados.
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleClose}>
+                                    Cancelar
+                                </Button>
+                                <Button variant="danger" onClick={deleteSale}>Confirmar</Button>
+                            </Modal.Footer>
+                        </Modal>
+                    </>
             }
         </Layout>
     )

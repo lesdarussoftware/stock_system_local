@@ -6,6 +6,7 @@ import { useMovements } from "../../hooks/useMovements";
 
 import { TableComponent } from "../common/TableComponent";
 import { MovementForm } from "../entities/MovementForm";
+import { AddIcon } from "../svg/AddIcon";
 
 import { Product } from "../../utils/db";
 import { ShowFormType } from "../../utils/types";
@@ -56,9 +57,14 @@ export function MovementsList({ product, setProductShowForm }: MovementsListProp
                 <>
                     <div className='d-flex justify-content-between align-items-start'>
                         <h2>{`Movimientos del artículo ${product.sku}`}</h2>
-                        <Button variant="secondary" type="button" onClick={() => setProductShowForm(null)}>
-                            Volver a lista de artículos
-                        </Button>
+                        <div className="d-flex gap-2 align-items-center mb-2">
+                            <button className="btn btn-primary d-flex align-items-center btn-lg" onClick={() => setShowForm('NEW')}>
+                                <AddIcon />
+                            </button>
+                            <Button variant="secondary" type="button" onClick={() => setProductShowForm(null)}>
+                                Volver a lista de artículos
+                            </Button>
+                        </div>
                     </div>
                     <TableComponent
                         columns={columns}

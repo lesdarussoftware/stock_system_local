@@ -46,7 +46,8 @@ export function PaymentForm({ paymentFormData, setShowForm, handleSubmit }: Paym
                     })}
                 />
             </Form.Group>
-            <Form.Group controlId="method" className='d-flex gap-2 align-items-center'>
+            <Form.Group controlId="method" className='my-3'>
+                <Form.Label>Método de pago</Form.Label>
                 <Form.Select value={formData.method} name="method" id='method'>
                     <option value="EFECTIVO">EFECTIVO</option>
                     <option value="CREDITO">CREDITO</option>
@@ -54,7 +55,7 @@ export function PaymentForm({ paymentFormData, setShowForm, handleSubmit }: Paym
                     <option value="TRANSFERENCIA">TRANSFERENCIA</option>
                 </Form.Select>
             </Form.Group>
-            <Form.Group controlId="observations" className="my-3">
+            <Form.Group controlId="observations" className="mb-3">
                 <Form.Label>Observaciones</Form.Label>
                 <Form.Control
                     name='observations'

@@ -6,6 +6,7 @@ import { useSalePayments } from "../../hooks/useSalePayments";
 
 import { TableComponent } from "../common/TableComponent";
 import { PaymentForm } from "../entities/PaymentForm";
+import { AddIcon } from "../svg/AddIcon";
 
 import { SaleOrder } from "../../utils/db";
 import { ShowFormType } from "../../utils/types";
@@ -55,9 +56,14 @@ export function SalePaymentsList({ saleOrder, setSaleOrderShowForm }: SalePaymen
                 <>
                     <div className='d-flex justify-content-between align-items-start'>
                         <h2>{`Pagos de la venta #${saleOrder.id}`}</h2>
-                        <Button variant="secondary" type="button" onClick={() => setSaleOrderShowForm(null)}>
-                            Volver a lista de ventas
-                        </Button>
+                        <div className="d-flex gap-2 align-items-center mb-2">
+                            <button className="btn btn-primary d-flex align-items-center btn-lg" onClick={() => setShowForm('NEW')}>
+                                <AddIcon />
+                            </button>
+                            <Button variant="secondary" type="button" onClick={() => setSaleOrderShowForm(null)}>
+                                Volver a lista de ventas
+                            </Button>
+                        </div>
                     </div>
                     <TableComponent
                         columns={columns}
