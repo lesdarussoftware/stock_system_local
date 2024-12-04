@@ -23,8 +23,12 @@ export function getStock(saleProducts: SaleProduct[], buyProducts: BuyProduct[],
     return parseFloat((salesAmount + purchasesAmount + movementsAmount).toFixed(2))
 }
 
-export function getSaleOrPurchaseTotal(items: Item[]): number {
+export function getSaleTotal(items: Item[]): number {
     return parseFloat(items.reduce((acc, i) => acc + getItemSalePrice(i) * i.amount, 0).toFixed(2));
+}
+
+export function getPurchaseTotal(items: Item[]): number {
+    return parseFloat(items.reduce((acc, i) => acc + i.product_buy_price * i.amount, 0).toFixed(2));
 }
 
 export function getSaleProductsTotal(saleProducts: SaleProduct[]): number {

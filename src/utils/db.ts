@@ -131,6 +131,7 @@ interface SalePayment {
     method: PaymentMethod;
     amount: number;
     date: Date;
+    observations?: string;
     created_at?: Date;
     updated_at?: Date;
 }
@@ -141,6 +142,7 @@ interface BuyPayment {
     method: PaymentMethod;
     amount: number;
     date: Date;
+    observations?: string;
     created_at?: Date;
     updated_at?: Date;
 }
@@ -173,8 +175,8 @@ db.version(1).stores({
     buy_products: '++id, buy_order_id, product_id, amount, product_buy_price, created_at, updated_at',
     sale_orders: '++id, client_id, date, status, user, payments_amount, created_at, updated_at',
     sale_products: '++id, sale_order_id, product_id, amount, product_buy_price, product_earn, product_sale_price, created_at, updated_at',
-    sale_payments: '++id, sale_order_id, method, amount, date, created_at, updated_at',
-    buy_payments: '++id, sale_order_id, method, amount, date, created_at, updated_at'
+    sale_payments: '++id, sale_order_id, method, amount, date, observations, created_at, updated_at',
+    buy_payments: '++id, sale_order_id, method, amount, date, observations, created_at, updated_at'
 });
 
 export type {

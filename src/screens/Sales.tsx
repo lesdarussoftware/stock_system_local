@@ -93,6 +93,7 @@ export function Sales() {
                         showViewAction
                         showEditAction
                         showDeleteAction
+                        showAdjustAction
                     />
                     <Modal show={showForm === 'DELETE'} onHide={handleClose} backdrop="static" keyboard={false}        >
                         <Modal.Header closeButton>
