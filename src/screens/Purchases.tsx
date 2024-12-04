@@ -29,7 +29,6 @@ export function Purchases() {
         deletePurchase,
         items,
         setItems,
-        getBuyProducts,
         idsToDelete,
         setIdsToDelete
     } = usePurchases();
@@ -48,7 +47,7 @@ export function Purchases() {
     }, [filter]);
 
     useEffect(() => {
-        if (showForm === 'EDIT' || showForm === 'VIEW' || showForm === 'DELETE') getBuyProducts(formData.id);
+        if (showForm === 'EDIT' || showForm === 'VIEW' || showForm === 'DELETE') setItems(formData.buy_products);
     }, [formData, showForm]);
 
     return (

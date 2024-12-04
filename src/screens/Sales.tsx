@@ -29,7 +29,6 @@ export function Sales() {
         deleteSale,
         items,
         setItems,
-        getSaleProducts,
         idsToDelete,
         setIdsToDelete
     } = useSales();
@@ -48,7 +47,7 @@ export function Sales() {
     }, [filter]);
 
     useEffect(() => {
-        if (showForm === 'EDIT' || showForm === 'VIEW' || showForm === 'DELETE') getSaleProducts(formData.id);
+        if (showForm === 'EDIT' || showForm === 'VIEW' || showForm === 'DELETE') setItems(formData.sale_products);
     }, [formData, showForm]);
 
     return (

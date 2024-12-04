@@ -67,6 +67,22 @@ export function PurchaseForm({
                     }}
                 />
             </Form.Group>
+            <Form.Group controlId="payments_amount" className='mb-3'>
+                <Form.Label>Cantidad Pagos</Form.Label>
+                <Form.Control
+                    type='number'
+                    min={1}
+                    step={1}
+                    name='payments_amount'
+                    value={formData.payments_amount}
+                    onChange={e => handleChange({
+                        target: {
+                            name: 'payments_amount',
+                            value: +e.target.value <= 1 ? 1 : +e.target.value
+                        }
+                    })}
+                />
+            </Form.Group>
             <Form.Group controlId="status">
                 <Form.Label>Estado</Form.Label>
                 <Form.Select

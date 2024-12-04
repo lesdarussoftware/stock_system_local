@@ -56,7 +56,12 @@ export function MovementForm({
                     step={1}
                     name='amount'
                     value={formData.amount}
-                    onChange={e => handleChange({ target: { name: 'amount', value: e.target.value } })}
+                    onChange={e => handleChange({
+                        target: {
+                            name: 'amount',
+                            value: +e.target.value <= 1 ? 1 : +e.target.value
+                        }
+                    })}
                 />
             </Form.Group>
             <Form.Group controlId="observations" className="my-3">

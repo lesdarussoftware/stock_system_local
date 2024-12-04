@@ -85,6 +85,7 @@ interface BuyOrder {
     date: Date;
     status: 'PENDIENTE' | 'RECIBIDA' | 'CANCELADA';
     user: number;
+    payments_amount: number;
     created_at: Date;
     updated_at: Date;
 }
@@ -105,6 +106,7 @@ interface SaleOrder {
     date: Date;
     status: 'PENDIENTE' | 'FINALIZADA' | 'CANCELADA';
     user: number;
+    payments_amount: number;
     created_at: Date;
     updated_at: Date;
 }
@@ -121,6 +123,28 @@ interface SaleProduct {
     updated_at?: Date;
 }
 
+type PaymentMethod = 'EFECTIVO' | 'CREDITO' | 'DEBITO' | 'TRANSFERENCIA';
+
+interface SalePayment {
+    id: number;
+    sale_order_id: number;
+    method: PaymentMethod;
+    amount: number;
+    date: Date;
+    created_at?: Date;
+    updated_at?: Date;
+}
+
+interface BuyPayment {
+    id: number;
+    buy_order_id: number;
+    method: PaymentMethod;
+    amount: number;
+    date: Date;
+    created_at?: Date;
+    updated_at?: Date;
+}
+
 const db = new Dexie('StockDatabase') as Dexie & {
     users: EntityTable<User, 'id'>;
     categories: EntityTable<Category, 'id'>;
@@ -133,6 +157,8 @@ const db = new Dexie('StockDatabase') as Dexie & {
     buy_products: EntityTable<BuyProduct, 'id'>;
     sale_orders: EntityTable<SaleOrder, 'id'>;
     sale_products: EntityTable<SaleProduct, 'id'>;
+    sale_payments: EntityTable<SalePayment, 'id'>;
+    buy_payments: EntityTable<BuyPayment, 'id'>;
 };
 
 db.version(1).stores({
@@ -143,11 +169,27 @@ db.version(1).stores({
     products: '++id, name, sku, bar_code, buy_price, earn, sale_price, min_stock, is_active, category_id, supplier_id, store_id, created_at, updated_at',
     movements: '++id, product_id, amount, date, type, user, created_at, updated_at',
     clients: '++id, name, phone, email, address, city, created_at, updated_at',
-    buy_orders: '++id, supplier_id, date, status, user, created_at, updated_at',
+    buy_orders: '++id, supplier_id, date, status, user, payments_amount, created_at, updated_at',
     buy_products: '++id, buy_order_id, product_id, amount, product_buy_price, created_at, updated_at',
-    sale_orders: '++id, client_id, date, status, user, created_at, updated_at',
-    sale_products: '++id, sale_order_id, product_id, amount, product_buy_price, product_earn, product_sale_price, created_at, updated_at'
+    sale_orders: '++id, client_id, date, status, user, payments_amount, created_at, updated_at',
+    sale_products: '++id, sale_order_id, product_id, amount, product_buy_price, product_earn, product_sale_price, created_at, updated_at',
+    sale_payments: '++id, sale_order_id, method, amount, date, created_at, updated_at',
+    buy_payments: '++id, sale_order_id, method, amount, date, created_at, updated_at'
 });
 
-export type { User, Category, Supplier, Store, Product, Movement, Client, BuyOrder, BuyProduct, SaleOrder, SaleProduct };
+export type {
+    User,
+    Category,
+    Supplier,
+    Store,
+    Product,
+    Movement,
+    Client,
+    BuyOrder,
+    BuyProduct,
+    SaleOrder,
+    SaleProduct,
+    SalePayment,
+    BuyPayment
+};
 export { db };

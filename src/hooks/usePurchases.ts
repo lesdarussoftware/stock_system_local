@@ -22,6 +22,7 @@ export function usePurchases() {
             supplier_id: '',
             date: format(new Date(Date.now()), 'yyyy-MM-dd'),
             status: 'PENDIENTE',
+            payments_amount: 1,
             user: ''
         },
         rules: {
@@ -45,16 +46,15 @@ export function usePurchases() {
             db.buy_products.toArray()
         ]);
         setTotalRows(count);
-        setPurchases(data.map(p => ({
-            ...p,
-            supplier: suppliers.find(s => s.id === +p.supplier_id)!.name,
-            total: `$${getBuyProductsTotal(buyProducts.filter(bp => +bp.buy_order_id === +p.id))}`
-        })));
-    }
-
-    async function getBuyProducts(buy_order_id: number) {
-        const data = await db.buy_products.where('buy_order_id').equals(+buy_order_id).toArray();
-        setItems(data);
+        setPurchases(data.map(p => {
+            const buy_products = buyProducts.filter(bp => +bp.buy_order_id === +p.id);
+            return {
+                ...p,
+                supplier: suppliers.find(s => s.id === +p.supplier_id)!.name,
+                total: `$${getBuyProductsTotal(buyProducts)}`,
+                buy_products
+            }
+        }));
     }
 
     async function handleSubmit(e: any) {
@@ -172,7 +172,6 @@ export function usePurchases() {
         handleClose,
         items,
         setItems,
-        getBuyProducts,
         idsToDelete,
         setIdsToDelete
     }

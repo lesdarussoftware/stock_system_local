@@ -24,6 +24,7 @@ export function useSales() {
             client_id: '',
             date: format(new Date(Date.now()), 'yyyy-MM-dd'),
             status: 'PENDIENTE',
+            payments_amount: 1,
             user: ''
         },
         rules: {
@@ -48,16 +49,15 @@ export function useSales() {
             db.sale_products.toArray()
         ]);
         setTotalRows(count);
-        setSales(data.map(s => ({
-            ...s,
-            client: clients.find(c => c.id === +s.client_id)!.name,
-            total: `$${getSaleProductsTotal(saleProducts.filter(sp => +sp.sale_order_id === +s.id))}`
-        })));
-    }
-
-    async function getSaleProducts(sale_order_id: number) {
-        const data = await db.sale_products.where('sale_order_id').equals(+sale_order_id).toArray();
-        setItems(data);
+        setSales(data.map(s => {
+            const sale_products = saleProducts.filter(sp => +sp.sale_order_id === +s.id);
+            return {
+                ...s,
+                client: clients.find(c => c.id === +s.client_id)!.name,
+                total: `$${getSaleProductsTotal(sale_products)}`,
+                sale_products
+            }
+        }));
     }
 
     async function handleSubmit(e: any) {
@@ -185,7 +185,6 @@ export function useSales() {
         handleClose,
         items,
         setItems,
-        getSaleProducts,
         idsToDelete,
         setIdsToDelete
     }
