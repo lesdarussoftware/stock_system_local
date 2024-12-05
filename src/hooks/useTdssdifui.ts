@@ -14,14 +14,16 @@ export function useTdssdifui() {
     } = useContext(MessageContext);
 
     const [bnmhjg] = useState<string>('estoesunaprueba');
-    const [frrtty] = useState<Date>(new Date('2024-12-05T00:00:00.000Z'));
+    const [frrtty] = useState<Date>(new Date('2024-12-07T00:00:00.000Z'));
     const [yoiuyiyyuiy, setYoiuyiyyuiy] = useState<boolean>(false);
+    const [xcxvxcv, setXcxvxcv] = useState<string>('');
 
     useEffect(() => {
         (async () => {
             const count = await db.tdssdifui.count();
             if (count === 0) {
                 await db.tdssdifui.add({ aewef: 1, yuynbv: true });
+                setYoiuyiyyuiy(true);
             }
             if (count === 1) {
                 const [current] = await db.tdssdifui.toArray();
@@ -37,9 +39,9 @@ export function useTdssdifui() {
         })()
     }, []);
 
-    const handleIuudsfysdu = async (jhkhjkh: string) => {
-        if (jhkhjkh === bnmhjg) {
-            await db.tdssdifui.update(1, { yuynbv: true, etjhfgbgf: jhkhjkh });
+    const handleIuudsfysdu = async () => {
+        if (xcxvxcv === bnmhjg) {
+            await db.tdssdifui.update(1, { yuynbv: true, etjhfgbgf: xcxvxcv });
             setYoiuyiyyuiy(true);
             wergjwerhg('Exito');
             buirghjirtuhr('Licencia activada.');
@@ -53,5 +55,5 @@ export function useTdssdifui() {
         wegfghfsdf(true);
     }
 
-    return { yoiuyiyyuiy, handleIuudsfysdu }
+    return { yoiuyiyyuiy, handleIuudsfysdu, xcxvxcv, setXcxvxcv }
 }

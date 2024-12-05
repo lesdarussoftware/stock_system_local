@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 import { useUsers } from "../../hooks/useUsers";
 import { useTdssdifui } from "../../hooks/useTdssdifui";
+import { Button, Form } from "react-bootstrap";
 
 type LayoutProps = {
     children: React.ReactNode;
@@ -13,8 +15,19 @@ export function Layout({ children }: LayoutProps) {
 
     const navigate = useNavigate();
 
-    useTdssdifui();
+    const { yoiuyiyyuiy, xcxvxcv, setXcxvxcv, handleIuudsfysdu } = useTdssdifui();
     const { logout } = useUsers();
+
+    if (!yoiuyiyyuiy) return (
+        <div className="vh-100 w-50 mx-auto d-flex align-items-center justify-content-center">
+            <Form onChange={(e: any) => setXcxvxcv(e.target.value)} onSubmit={handleIuudsfysdu} className="w-100 d-flex gap-2">
+                <Form.Control name='name' value={xcxvxcv} placeholder="Código..." />
+                <Button variant="primary" type="submit">
+                    Activar
+                </Button>
+            </Form>
+        </div>
+    )
 
     return (
         <div>

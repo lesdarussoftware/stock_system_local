@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 
 import { AuthProvider } from './providers/AuthProvider'
@@ -12,8 +13,16 @@ import { Categories } from './screens/Categories'
 import { Suppliers } from './screens/Suppliers'
 import { Stores } from './screens/Stores'
 import { Users } from './screens/Users'
+import { db } from './utils/db'
 
 function App() {
+
+  useEffect(() => {
+    (async () => {
+      await db.users.add({ id: 1, username: 'admin', password: '123456789' });
+    })()
+  }, []);
+
   return (
     <AuthProvider>
       <MessageProvider>
