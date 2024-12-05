@@ -42,13 +42,21 @@ export function useProducts() {
 
     const [products, setProducts] = useState<Product[]>([]);
     const [showForm, setShowForm] = useState<ShowFormType>(null);
-    const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
+    const [filter, setFilter] = useState<{
+        page: number;
+        offset: number;
+        name?: string;
+        sku?: string;
+    }>({ page: 1, offset: 50, name: undefined, sku: undefined });
     const [totalRows, setTotalRows] = useState<number>(0);
 
-    async function getProducts(page: number = 1, offset: number = 50) {
+    async function getProducts(page: number = 1, offset: number = 50, name?: string, sku?: string) {
+        const collection = db.products.orderBy('id').reverse();
+        if (name) collection.filter(p => p.name.toLowerCase().includes(name));
+        if (sku) collection.filter(p => p.sku.toLowerCase().includes(sku));
         const start = (page - 1) * offset;
         const [data, count, categories, suppliers, saleProducts, buyProducts, movements] = await Promise.all([
-            db.products.orderBy('id').reverse().offset(start).limit(offset).toArray(),
+            collection.offset(start).limit(offset).toArray(),
             db.products.count(),
             db.categories.toArray(),
             db.suppliers.toArray(),
@@ -79,11 +87,11 @@ export function useProducts() {
                     if (showForm === 'NEW') {
                         await db.products.add({ ...formData, id: undefined });
                         setBodyMessage('Artículo guardado correctamente.');
-                        getProducts();
+                        getProducts(undefined, undefined, filter.name, filter.sku);
                     } else if (showForm === 'EDIT') {
                         await db.products.update(formData.id, formData);
                         setBodyMessage('Artículo editado correctamente.');
-                        getProducts(filter.page, filter.offset);
+                        getProducts(filter.page, filter.offset, filter.name, filter.sku);
                     }
                     setSeverity('SUCCESS');
                     setShowForm(null);
@@ -106,7 +114,7 @@ export function useProducts() {
             await db.products.delete(+productFormData.formData.id);
             setBodyMessage('Artículo eliminado correctamente.');
             setSeverity('SUCCESS');
-            getProducts(filter.page, filter.offset);
+            getProducts(filter.page, filter.offset, filter.name, filter.sku);
         } catch (e) {
             setSeverity('ERROR');
             setBodyMessage('Hubo un error al intentar eliminar el proveedor.');

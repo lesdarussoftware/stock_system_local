@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 import { useClients } from "../hooks/useClients";
 
@@ -29,8 +30,8 @@ export function Clients() {
     const { formData, setFormData } = clientFormData;
 
     useEffect(() => {
-        const { page, offset } = filter;
-        getClients(page, offset);
+        const { page, offset, name } = filter;
+        getClients(page, offset, name);
     }, [filter]);
 
     return (
@@ -46,7 +47,14 @@ export function Clients() {
                 </> :
                 <>
                     <div className="d-flex justify-content-between align-items-center mb-2">
-                        <h2>Clientes</h2>
+                        <div className="d-flex gap-2">
+                            <h2>Clientes</h2>
+                            <Form.Control
+                                placeholder="Buscar por nombre..."
+                                value={filter.name}
+                                onChange={e => setFilter({ ...filter, name: e.target.value })}
+                            />
+                        </div>
                         <button className="btn btn-primary d-flex align-items-center btn-lg" onClick={() => setShowForm('NEW')}>
                             <AddIcon />
                         </button>

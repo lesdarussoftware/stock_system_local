@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 import { useProducts } from "../hooks/useProducts";
 import { useCategories } from "../hooks/useCategories";
@@ -42,8 +43,8 @@ export function Products() {
     }, []);
 
     useEffect(() => {
-        const { page, offset } = filter;
-        getProducts(page, offset);
+        const { page, offset, name, sku } = filter;
+        getProducts(page, offset, name, sku);
     }, [filter]);
 
     return (
@@ -72,7 +73,19 @@ export function Products() {
                     /> :
                     <>
                         <div className="d-flex justify-content-between align-items-center mb-2">
-                            <h2>Artículos</h2>
+                            <div className="d-flex gap-2">
+                                <h2>Artículos</h2>
+                                <Form.Control
+                                    placeholder="Buscar por nombre..."
+                                    value={filter.name}
+                                    onChange={e => setFilter({ ...filter, name: e.target.value })}
+                                />
+                                <Form.Control
+                                    placeholder="Buscar por SKU..."
+                                    value={filter.sku}
+                                    onChange={e => setFilter({ ...filter, sku: e.target.value })}
+                                />
+                            </div>
                             <button className="btn btn-primary d-flex align-items-center btn-lg" onClick={() => setShowForm('NEW')}>
                                 <AddIcon />
                             </button>

@@ -32,13 +32,19 @@ export function useClients() {
 
     const [clients, setClients] = useState<Client[]>([]);
     const [showForm, setShowForm] = useState<ShowFormType>(null);
-    const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
+    const [filter, setFilter] = useState<{
+        page: number;
+        offset: number;
+        name?: string;
+    }>({ page: 1, offset: 50, name: undefined });
     const [totalRows, setTotalRows] = useState<number>(0);
 
-    async function getClients(page: number = 1, offset: number = 50) {
+    async function getClients(page: number = 1, offset: number = 50, name?: string) {
+        const collection = db.clients.orderBy('id').reverse();
+        if (name) collection.filter(p => p.name.toLowerCase().includes(name));
         const start = (page - 1) * offset;
         const [data, count] = await Promise.all([
-            db.clients.orderBy('id').reverse().offset(start).limit(offset).toArray(),
+            collection.offset(start).limit(offset).toArray(),
             db.clients.count()
         ]);
         setTotalRows(count);
@@ -53,11 +59,11 @@ export function useClients() {
                 if (showForm === 'NEW') {
                     await db.clients.add({ ...formData, id: undefined });
                     setBodyMessage('Cliente guardado correctamente.');
-                    getClients();
+                    getClients(undefined, undefined, filter.name);
                 } else if (showForm === 'EDIT') {
                     await db.clients.update(formData.id, formData);
                     setBodyMessage('Cliente editado correctamente.');
-                    getClients(filter.page, filter.offset);
+                    getClients(filter.page, filter.offset, filter.name);
                 }
                 setSeverity('SUCCESS');
                 setShowForm(null);
@@ -76,7 +82,7 @@ export function useClients() {
             await db.suppliers.delete(+clientFormData.formData.id);
             setBodyMessage('Cliente eliminado correctamente.');
             setSeverity('SUCCESS');
-            getClients(filter.page, filter.offset);
+            getClients(filter.page, filter.offset, filter.name);
         } catch (e) {
             setSeverity('ERROR');
             setBodyMessage('Hubo un error al intentar eliminar el cliente.');
