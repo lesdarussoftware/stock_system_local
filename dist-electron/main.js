@@ -1,7 +1,8 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, screen } from "electron";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { exec } from "node:child_process";
 createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 process.env.APP_ROOT = path.join(__dirname, "..");
@@ -11,11 +12,23 @@ const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
 let win;
 function createWindow() {
+  const { workAreaSize } = screen.getPrimaryDisplay();
   win = new BrowserWindow({
+    width: workAreaSize.width,
+    height: workAreaSize.height,
     icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
+    title: "Sistema de stock - Lesdarus Software",
+    resizable: false,
+    // Deshabilitar el redimensionamiento de la ventana
     webPreferences: {
-      preload: path.join(__dirname, "preload.mjs")
+      preload: path.join(__dirname, "preload.mjs"),
+      devTools: false
+      // Bloquea DevTools en producción
     }
+  });
+  win.setMenu(null);
+  win.webContents.on("devtools-opened", () => {
+    win == null ? void 0 : win.webContents.closeDevTools();
   });
   win.webContents.on("did-finish-load", () => {
     win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
@@ -38,6 +51,9 @@ app.on("activate", () => {
   }
 });
 app.whenReady().then(createWindow);
+if (!VITE_DEV_SERVER_URL) {
+  exec("javascript-obfuscator ./dist-electron --output ./dist-electron-obfuscated");
+}
 export {
   MAIN_DIST,
   RENDERER_DIST,
