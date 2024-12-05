@@ -57,11 +57,16 @@ export function useClients() {
         if (validate()) {
             try {
                 if (showForm === 'NEW') {
-                    await db.clients.add({ ...formData, id: undefined });
+                    await db.clients.add({
+                        ...formData,
+                        id: undefined,
+                        created_at: new Date(Date.now()),
+                        updated_at: new Date(Date.now())
+                    });
                     setBodyMessage('Cliente guardado correctamente.');
                     getClients(undefined, undefined, filter.name);
                 } else if (showForm === 'EDIT') {
-                    await db.clients.update(formData.id, formData);
+                    await db.clients.update(formData.id, { ...formData, updated_at: new Date(Date.now()) });
                     setBodyMessage('Cliente editado correctamente.');
                     getClients(filter.page, filter.offset, filter.name);
                 }

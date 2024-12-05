@@ -85,11 +85,16 @@ export function useProducts() {
                 const isValid = await skuDoesNotExist(formData.sku);
                 if (isValid) {
                     if (showForm === 'NEW') {
-                        await db.products.add({ ...formData, id: undefined });
+                        await db.products.add({
+                            ...formData,
+                            id: undefined,
+                            created_at: new Date(Date.now()),
+                            updated_at: new Date(Date.now())
+                        });
                         setBodyMessage('Artículo guardado correctamente.');
                         getProducts(undefined, undefined, filter.name, filter.sku);
                     } else if (showForm === 'EDIT') {
-                        await db.products.update(formData.id, formData);
+                        await db.products.update(formData.id, { ...formData, updated_at: new Date(Date.now()) });
                         setBodyMessage('Artículo editado correctamente.');
                         getProducts(filter.page, filter.offset, filter.name, filter.sku);
                     }
