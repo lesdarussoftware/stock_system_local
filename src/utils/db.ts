@@ -1,5 +1,11 @@
 import Dexie, { type EntityTable } from 'dexie';
 
+interface Tdssdifui {
+    aewef: number;
+    yuynbv: boolean;
+    etjhfgbgf?: string;
+}
+
 interface User {
     id: number;
     username: string;
@@ -148,6 +154,7 @@ interface BuyPayment {
 }
 
 const db = new Dexie('StockDatabase') as Dexie & {
+    tdssdifui: EntityTable<Tdssdifui, 'aewef'>;
     users: EntityTable<User, 'id'>;
     categories: EntityTable<Category, 'id'>;
     suppliers: EntityTable<Supplier, 'id'>;
@@ -164,6 +171,7 @@ const db = new Dexie('StockDatabase') as Dexie & {
 };
 
 db.version(1).stores({
+    tdssdifui: '++aewef, yuynbv, etjhfgbgf',
     users: '++id, username, password, created_at, updated_at',
     categories: '++id, name, description, created_at, updated_at',
     suppliers: '++id, name, phone, email, address, city, created_at, updated_at',
@@ -180,6 +188,7 @@ db.version(1).stores({
 });
 
 export type {
+    Tdssdifui,
     User,
     Category,
     Supplier,

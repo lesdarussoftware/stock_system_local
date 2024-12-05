@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 import { useUsers } from "../../hooks/useUsers";
+import { useTdssdifui } from "../../hooks/useTdssdifui";
 
 type LayoutProps = {
     children: React.ReactNode;
@@ -13,6 +13,7 @@ export function Layout({ children }: LayoutProps) {
 
     const navigate = useNavigate();
 
+    useTdssdifui();
     const { logout } = useUsers();
 
     return (
