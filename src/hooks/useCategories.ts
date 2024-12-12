@@ -41,11 +41,16 @@ export function useCategories() {
                 const isValid = await nameDoesNotExist(formData.name);
                 if (isValid) {
                     if (showForm === 'NEW') {
-                        await db.categories.add({ ...formData, id: undefined });
+                        await db.categories.add({
+                            ...formData,
+                            id: undefined,
+                            created_at: new Date(Date.now()),
+                            updated_at: new Date(Date.now())
+                        });
                         setBodyMessage('Categoría guardada correctamente.');
                         getCategories();
                     } else if (showForm === 'EDIT') {
-                        await db.categories.update(formData.id, formData);
+                        await db.categories.update(formData.id, { ...formData, updated_at: new Date(Date.now()) });
                         setBodyMessage('Categoría editada correctamente.');
                         getCategories(filter.page, filter.offset);
                     }

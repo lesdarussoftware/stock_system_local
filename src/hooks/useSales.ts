@@ -68,14 +68,22 @@ export function useSales() {
             try {
                 if (theresStock(products, items)) {
                     if (showForm === 'NEW') {
-                        const saleId = await db.sale_orders.add({ ...formData, id: undefined, user: auth?.username });
+                        const saleId = await db.sale_orders.add({
+                            ...formData,
+                            id: undefined,
+                            user: auth?.username,
+                            created_at: new Date(Date.now()),
+                            updated_at: new Date(Date.now())
+                        });
                         await db.sale_products.bulkAdd(items.map((i: Item) => ({
                             sale_order_id: saleId,
                             product_id: i.product_id,
                             amount: i.amount,
                             product_buy_price: i.product_buy_price,
                             product_earn: i.product_earn,
-                            product_sale_price: i.product_sale_price
+                            product_sale_price: i.product_sale_price,
+                            created_at: new Date(Date.now()),
+                            updated_at: new Date(Date.now())
                         })));
                         setBodyMessage('Venta guardada correctamente.');
                         getSales();
@@ -83,8 +91,15 @@ export function useSales() {
                         await Promise.all([
                             db.sale_orders.update(formData.id, formData),
                             db.sale_products.bulkDelete(idsToDelete),
-                            db.sale_products.bulkUpdate(items.filter(i => i.id).map(i => ({ key: i.id, changes: i }))),
-                            db.sale_products.bulkAdd(items.filter(i => !i.id))
+                            db.sale_products.bulkUpdate(items.filter(i => i.id).map(i => ({
+                                key: i.id,
+                                changes: { ...i, updated_at: new Date(Date.now()) }
+                            }))),
+                            db.sale_products.bulkAdd(items.filter(i => !i.id).map(i => ({
+                                ...i,
+                                created_at: new Date(Date.now()),
+                                updated_at: new Date(Date.now())
+                            })))
                         ]);
                         setBodyMessage('Venta editada correctamente.');
                         getSales(filter.page, filter.offset);

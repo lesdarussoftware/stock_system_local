@@ -54,11 +54,16 @@ export function useStores() {
                 const isValid = await nameDoesNotExist(formData.name);
                 if (isValid) {
                     if (showForm === 'NEW') {
-                        await db.suppliers.add({ ...formData, id: undefined });
+                        await db.stores.add({
+                            ...formData,
+                            id: undefined,
+                            created_at: new Date(Date.now()),
+                            updated_at: new Date(Date.now())
+                        });
                         setBodyMessage('Depósito guardado correctamente.');
                         getStores();
                     } else if (showForm === 'EDIT') {
-                        await db.suppliers.update(formData.id, formData);
+                        await db.stores.update(formData.id, { ...formData, updated_at: new Date(Date.now()) });
                         setBodyMessage('Depósito editado correctamente.');
                         getStores(filter.page, filter.offset);
                     }

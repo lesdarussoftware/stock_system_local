@@ -63,21 +63,35 @@ export function usePurchases() {
         if (validate()) {
             try {
                 if (showForm === 'NEW') {
-                    const purchaseId = await db.buy_orders.add({ ...formData, id: undefined, user: auth?.username });
+                    const purchaseId = await db.buy_orders.add({
+                        ...formData,
+                        id: undefined, user: auth?.username,
+                        created_at: new Date(Date.now()),
+                        updated_at: new Date(Date.now())
+                    });
                     await db.buy_products.bulkAdd(items.map((i: Item) => ({
                         buy_order_id: purchaseId,
                         product_id: i.product_id,
                         amount: i.amount,
-                        product_buy_price: i.product_buy_price
+                        product_buy_price: i.product_buy_price,
+                        created_at: new Date(Date.now()),
+                        updated_at: new Date(Date.now())
                     })));
                     setBodyMessage('Compra guardada correctamente.');
                     getPurchases();
                 } else if (showForm === 'EDIT') {
                     await Promise.all([
-                        db.buy_orders.update(formData.id, formData),
+                        db.buy_orders.update(formData.id, { ...formData, updated_at: new Date(Date.now()) }),
                         db.buy_products.bulkDelete(idsToDelete),
-                        db.buy_products.bulkUpdate(items.filter(i => i.id).map(i => ({ key: i.id, changes: i }))),
-                        db.buy_products.bulkAdd(items.filter(i => !i.id))
+                        db.buy_products.bulkUpdate(items.filter(i => i.id).map(i => ({
+                            key: i.id,
+                            changes: { ...i, updated_at: new Date(Date.now()) }
+                        }))),
+                        db.buy_products.bulkAdd(items.filter(i => !i.id).map(i => ({
+                            ...i,
+                            created_at: new Date(Date.now()),
+                            updated_at: new Date(Date.now())
+                        })))
                     ]);
                     setBodyMessage('Compra editada correctamente.');
                     getPurchases(filter.page, filter.offset);

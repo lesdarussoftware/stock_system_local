@@ -54,11 +54,16 @@ export function useSuppliers() {
                 const isValid = await nameDoesNotExist(formData.name);
                 if (isValid) {
                     if (showForm === 'NEW') {
-                        await db.suppliers.add({ ...formData, id: undefined });
+                        await db.suppliers.add({
+                            ...formData,
+                            id: undefined,
+                            created_at: new Date(Date.now()),
+                            updated_at: new Date(Date.now())
+                        });
                         setBodyMessage('Proveedor guardado correctamente.');
                         getSuppliers();
                     } else if (showForm === 'EDIT') {
-                        await db.suppliers.update(formData.id, formData);
+                        await db.suppliers.update(formData.id, { ...formData, updated_at: new Date(Date.now()) });
                         setBodyMessage('Proveedor editado correctamente.');
                         getSuppliers(filter.page, filter.offset);
                     }

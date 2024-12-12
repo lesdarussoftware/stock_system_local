@@ -52,10 +52,15 @@ export function useBuyPayments() {
         if (validate()) {
             try {
                 if (showForm === 'NEW') {
-                    await db.buy_payments.add({ ...formData, id: undefined });
+                    await db.buy_payments.add({
+                        ...formData,
+                        id: undefined,
+                        created_at: new Date(Date.now()),
+                        updated_at: new Date(Date.now())
+                    });
                     setBodyMessage('Pago guardado correctamente.');
                 } else if (showForm === 'EDIT') {
-                    await db.buy_payments.update(formData.id, formData);
+                    await db.buy_payments.update(formData.id, { ...formData, updated_at: new Date(Date.now()) });
                     setBodyMessage('Pago editado correctamente.');
                 }
                 getBuyPayments(formData.buy_order_id, filter.page, filter.offset);

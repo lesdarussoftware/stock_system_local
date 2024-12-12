@@ -52,10 +52,15 @@ export function useSalePayments() {
         if (validate()) {
             try {
                 if (showForm === 'NEW') {
-                    await db.sale_payments.add({ ...formData, id: undefined });
+                    await db.sale_payments.add({
+                        ...formData,
+                        id: undefined,
+                        created_at: new Date(Date.now()),
+                        updated_at: new Date(Date.now())
+                    });
                     setBodyMessage('Pago guardado correctamente.');
                 } else if (showForm === 'EDIT') {
-                    await db.sale_payments.update(formData.id, formData);
+                    await db.sale_payments.update(formData.id, { ...formData, updated_at: new Date(Date.now()) });
                     setBodyMessage('Pago editado correctamente.');
                 }
                 getSalePayments(formData.sale_order_id, filter.page, filter.offset);

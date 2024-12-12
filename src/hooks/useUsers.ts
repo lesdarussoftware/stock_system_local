@@ -79,7 +79,12 @@ export function useUsers() {
         const { formData, validate, reset } = userFormData;
         if (validate()) {
             try {
-                await db.users.add({ ...formData, id: undefined });
+                await db.users.add({
+                    ...formData,
+                    id: undefined,
+                    created_at: new Date(Date.now()),
+                    updated_at: new Date(Date.now())
+                });
                 setSeverity('SUCCESS');
                 setBodyMessage('Usuario guardado correctamente.');
                 setShowForm(null);

@@ -58,10 +58,16 @@ export function useMovements() {
         if (validate()) {
             try {
                 if (showForm === 'NEW') {
-                    await db.movements.add({ ...formData, id: undefined, user: auth?.username });
+                    await db.movements.add({
+                        ...formData,
+                        id: undefined,
+                        user: auth?.username,
+                        created_at: new Date(Date.now()),
+                        updated_at: new Date(Date.now())
+                    });
                     setBodyMessage('Movimiento guardado correctamente.');
                 } else if (showForm === 'EDIT') {
-                    await db.movements.update(formData.id, formData);
+                    await db.movements.update(formData.id, { ...formData, updated_at: new Date(Date.now()) });
                     setBodyMessage('Movimiento editado correctamente.');
                     getMovements(formData.product_id, filter.page, filter.offset);
                 }
