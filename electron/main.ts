@@ -31,21 +31,21 @@ function createWindow() {
     resizable: false, // Deshabilitar el redimensionamiento de la ventana
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
-      devTools: false // Bloquea DevTools en producción
+      // devTools: false // Bloquea DevTools en producción
     },
   })
 
   // Ocultar el menú por defecto
-  win.setMenu(null)
+  // win.setMenu(null)
 
   // Evita la apertura de DevTools manualmente
-  win.webContents.on('devtools-opened', () => {
-    win?.webContents.closeDevTools()
-  })
+  // win.webContents.on('devtools-opened', () => {
+  //   win?.webContents.closeDevTools()
+  // })
 
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
-  })
+  // win.webContents.on('did-finish-load', () => {
+  //   win?.webContents.send('main-process-message', (new Date).toLocaleString())
+  // })
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)

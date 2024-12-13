@@ -9,7 +9,7 @@ export function getProductSalePrice(product: Product): number {
 export function getItemSalePrice(item: Item): number {
     const { product_sale_price, product_buy_price, product_earn } = item;
     if (product_sale_price && +product_sale_price > 0) return +product_sale_price;
-    return parseFloat((product_buy_price + ((product_buy_price / 100) * product_earn)).toFixed(2));
+    return parseFloat((+product_buy_price + ((+product_buy_price / 100) * +product_earn)).toFixed(2));
 }
 
 export function getStock(saleProducts: SaleProduct[], buyProducts: BuyProduct[], movements: Movement[]): number {

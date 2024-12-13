@@ -22,17 +22,9 @@ function createWindow() {
     resizable: false,
     // Deshabilitar el redimensionamiento de la ventana
     webPreferences: {
-      preload: path.join(__dirname, "preload.mjs"),
-      devTools: false
-      // Bloquea DevTools en producción
+      preload: path.join(__dirname, "preload.mjs")
+      // devTools: false // Bloquea DevTools en producción
     }
-  });
-  win.setMenu(null);
-  win.webContents.on("devtools-opened", () => {
-    win == null ? void 0 : win.webContents.closeDevTools();
-  });
-  win.webContents.on("did-finish-load", () => {
-    win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
   });
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
