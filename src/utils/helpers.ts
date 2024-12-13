@@ -20,7 +20,7 @@ export function getStock(saleProducts: SaleProduct[], buyProducts: BuyProduct[],
         if (m.type === 'EGRESO') return acc - +m.amount;
         return acc;
     }, 0);
-    return parseFloat((salesAmount + purchasesAmount + movementsAmount).toFixed(2))
+    return parseFloat((purchasesAmount + movementsAmount - salesAmount).toFixed(2))
 }
 
 export function getSaleTotal(items: Item[]): number {
@@ -38,7 +38,7 @@ export function getSaleProductsTotal(saleProducts: SaleProduct[]): number {
         if (product_sale_price && +product_sale_price > 0) {
             price = +product_sale_price;
         } else {
-            price = parseFloat((product_buy_price + ((product_buy_price / 100) * product_earn)).toFixed(2));
+            price = parseFloat((+product_buy_price + ((+product_buy_price / 100) * +product_earn)).toFixed(2));
         }
         return acc + (price * sp.amount)
     }, 0).toFixed(2));

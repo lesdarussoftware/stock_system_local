@@ -8,5 +8,7 @@ export async function skuDoesNotExist(sku: string): Promise<boolean> {
 }
 
 export function theresStock(products: any[], items: Item[]): boolean {
-    return items.every(i => products.find(p => +p.id === +i.product_id)?.stock > 0);
+    return items.every(i => {
+        return products.find(p => +p.id === +i.product_id)?.stock > 0
+    });
 }
