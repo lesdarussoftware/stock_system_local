@@ -143,7 +143,7 @@ export function ProductForm({
                     {showForm === 'VIEW' ? 'Volver' : 'Cancelar'}
                 </Button>
                 {(showForm === 'NEW' || showForm === 'EDIT') &&
-                    <Button variant="primary" type="submit" className='w-25'>
+                    <Button variant="primary" type="submit" className='w-25' disabled={parseFloat(formData.buy_price) <= 0}>
                         Guardar
                     </Button>
                 }
