@@ -19,10 +19,14 @@ let win: BrowserWindow | null
 function createWindow() {
   const { workAreaSize } = screen.getPrimaryDisplay()
 
+  const iconPath = process.platform === 'win32'
+    ? path.join(process.env.VITE_PUBLIC, 'iconico.ico')
+    : path.join(process.env.VITE_PUBLIC, 'iconpng.png');
+
   win = new BrowserWindow({
     width: workAreaSize.width,
     height: workAreaSize.height,
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
+    icon: iconPath,
     title: 'Sistema de stock - Lesdarus Software',
     resizable: false, // Deshabilitar el redimensionamiento de la ventana
     webPreferences: {
