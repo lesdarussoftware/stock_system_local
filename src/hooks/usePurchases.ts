@@ -32,15 +32,37 @@ export function usePurchases() {
 
     const [purchases, setPurchases] = useState<BuyOrder[]>([]);
     const [showForm, setShowForm] = useState<ShowFormType>(null);
-    const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
+    const [filter, setFilter] = useState<{
+        page: number;
+        offset: number;
+        from: number | string | string[] | undefined;
+        to: number | string | string[] | undefined;
+    }>({
+        page: 1,
+        offset: 50,
+        from: '',
+        to: ''
+    });
     const [totalRows, setTotalRows] = useState<number>(0);
     const [items, setItems] = useState<any[]>([]);
     const [idsToDelete, setIdsToDelete] = useState<number[]>([]);
 
-    async function getPurchases(page: number = 1, offset: number = 50) {
+    async function getPurchases(
+        page: number = 1,
+        offset: number = 50,
+        from?: string,
+        to?: string
+    ) {
         const start = (page - 1) * offset;
+        const collection = db.buy_orders.orderBy("id").reverse();
+        const filteredCollection = collection.filter(bo => {
+            const purchaseDate = new Date(bo.date);
+            const fromDate = from ? new Date(from) : null;
+            const toDate = to ? new Date(to) : null;
+            return (!fromDate || purchaseDate >= fromDate) && (!toDate || purchaseDate <= toDate);
+        });
         const [data, count, suppliers, buyProducts] = await Promise.all([
-            db.buy_orders.orderBy('id').reverse().offset(start).limit(offset).toArray(),
+            filteredCollection.offset(start).limit(offset).toArray(),
             db.buy_orders.count(),
             db.suppliers.toArray(),
             db.buy_products.toArray()

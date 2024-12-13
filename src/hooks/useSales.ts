@@ -6,11 +6,11 @@ import { MessageContext } from "../contexts/MessageContext";
 
 import { AuthContext } from "../contexts/AuthContext";
 import { useForm } from "./useForm";
+import { useProducts } from "./useProducts";
 
+import { theresStock } from "../middlewares/product";
 import { db, SaleOrder } from "../utils/db";
 import { Item, ShowFormType } from "../utils/types";
-import { theresStock } from "../middlewares/product";
-import { useProducts } from "./useProducts";
 import { getSaleProductsTotal } from "../utils/helpers";
 
 export function useSales() {
@@ -35,28 +35,50 @@ export function useSales() {
 
     const [sales, setSales] = useState<SaleOrder[]>([]);
     const [showForm, setShowForm] = useState<ShowFormType>(null);
-    const [filter, setFilter] = useState<{ page: number; offset: number; }>({ page: 1, offset: 50 });
+    const [filter, setFilter] = useState<{
+        page: number;
+        offset: number;
+        from: number | string | string[] | undefined;
+        to: number | string | string[] | undefined;
+    }>({
+        page: 1,
+        offset: 50,
+        from: '',
+        to: ''
+    });
     const [totalRows, setTotalRows] = useState<number>(0);
     const [items, setItems] = useState<any[]>([]);
     const [idsToDelete, setIdsToDelete] = useState<number[]>([]);
 
-    async function getSales(page: number = 1, offset: number = 50) {
+    async function getSales(
+        page: number = 1,
+        offset: number = 50,
+        from?: string,
+        to?: string
+    ) {
         const start = (page - 1) * offset;
+        const collection = db.sale_orders.orderBy("id").reverse();
+        const filteredCollection = collection.filter(so => {
+            const saleDate = new Date(so.date);
+            const fromDate = from ? new Date(from) : null;
+            const toDate = to ? new Date(to) : null;
+            return (!fromDate || saleDate >= fromDate) && (!toDate || saleDate <= toDate);
+        });
         const [data, count, clients, saleProducts] = await Promise.all([
-            db.sale_orders.orderBy('id').reverse().offset(start).limit(offset).toArray(),
+            filteredCollection.offset(start).limit(offset).toArray(),
             db.sale_orders.count(),
             db.clients.toArray(),
             db.sale_products.toArray()
         ]);
         setTotalRows(count);
         setSales(data.map(s => {
-            const sale_products = saleProducts.filter(sp => +sp.sale_order_id === +s.id);
+            const sale_products = saleProducts.filter(sp => sp.sale_order_id === s.id);
             return {
                 ...s,
-                client: clients.find(c => c.id === +s.client_id)!.name,
+                client: clients.find(c => c.id === s.client_id)?.name || "Unknown",
                 total: `$${getSaleProductsTotal(sale_products)}`,
                 sale_products
-            }
+            };
         }));
     }
 

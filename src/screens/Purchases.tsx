@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 import { usePurchases } from "../hooks/usePurchases";
 import { useSuppliers } from "../hooks/useSuppliers";
@@ -43,8 +44,8 @@ export function Purchases() {
     }, [])
 
     useEffect(() => {
-        const { page, offset } = filter;
-        getPurchases(page, offset);
+        const { page, offset, from, to } = filter;
+        getPurchases(page, offset, from?.toString(), to?.toString());
     }, [filter]);
 
     useEffect(() => {
@@ -78,7 +79,25 @@ export function Purchases() {
                     <BuyPaymentsList buyOrder={formData} setBuyOrderShowForm={setShowForm} /> :
                     <>
                         <div className="d-flex justify-content-between align-items-center mb-2">
-                            <h2>Compras</h2>
+                            <div className="d-flex gap-3 align-items-center">
+                                <h2>Compras</h2>
+                                <Form.Group controlId="from">
+                                    <Form.Label className="mb-0">Desde</Form.Label>
+                                    <Form.Control
+                                        type="date"
+                                        value={filter.from}
+                                        onChange={e => setFilter({ ...filter, from: e.target.value })}
+                                    />
+                                </Form.Group>
+                                <Form.Group controlId="to">
+                                    <Form.Label className="mb-0">Hasta</Form.Label>
+                                    <Form.Control
+                                        type="date"
+                                        value={filter.to}
+                                        onChange={e => setFilter({ ...filter, to: e.target.value })}
+                                    />
+                                </Form.Group>
+                            </div>
                             <button className="btn btn-primary d-flex align-items-center btn-lg" onClick={() => setShowForm('NEW')}>
                                 <AddIcon />
                             </button>
