@@ -80,6 +80,7 @@ export function CommercialTable({
                     <tr>
                         <th>#</th>
                         <th>Nombre</th>
+                        <th>Stock</th>
                         <th>Cantidad</th>
                         <th>Total det.</th>
                         {(showForm === 'NEW' || showForm === 'EDIT') && <th />}
@@ -93,11 +94,12 @@ export function CommercialTable({
                             </td>
                         </tr> :
                         items.map((item: any, idx: number) => {
-                            const product = products.find(p => +p.id === +item.product_id)!;
+                            const product: any = products.find(p => +p.id === +item.product_id)!;
                             return (
                                 <tr key={idx}>
                                     <td>{idx + 1}</td>
                                     <td>{product.name}</td>
+                                    <td>{product.stock}</td>
                                     <td>
                                         <Form.Control
                                             type='number'
