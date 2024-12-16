@@ -1,5 +1,5 @@
 import { useState, useRef, ChangeEvent, useEffect } from 'react';
-import { Form, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 
 type Option = {
     id: number;
@@ -17,9 +17,8 @@ export function Autocomplete({
     onChange,
     placeholder = "Buscar...",
 }: AutocompleteProps) {
-
     const [query, setQuery] = useState<string>('');
-    const [filteredOptions, setFilteredOptions] = useState<Option[]>([]);
+    const [filteredOptions, setFilteredOptions] = useState<Option[]>(options);
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -28,19 +27,16 @@ export function Autocomplete({
         const value = e.target.value;
         setQuery(value);
 
-        if (value.trim() !== '') {
-            const filtered = options.filter((option) =>
-                option.label.toLowerCase().includes(value.toLowerCase())
-            );
-            setFilteredOptions(filtered);
-            setShowDropdown(filtered.length > 0);
-        } else {
-            setShowDropdown(false);
-        }
+        // Filtrar las opciones según el input del usuario
+        const filtered = options.filter((option) =>
+            option.label.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredOptions(filtered);
+        setShowDropdown(true);
     };
 
     const handleOptionSelect = (option: Option): void => {
-        setQuery('');
+        setQuery(option.label);
         setShowDropdown(false);
         if (onChange) onChange(option.id);
     };
@@ -65,23 +61,52 @@ export function Autocomplete({
                 value={query}
                 onChange={handleInputChange}
                 placeholder={placeholder}
+                onFocus={() => setShowDropdown(true)} // Mostrar el dropdown al enfocar
             />
             {showDropdown && (
-                <DropdownButton
-                    show
-                    title=""
-                    id="autocomplete-dropdown"
-                    style={{ position: 'absolute', width: '100%', zIndex: 1000 }}
+                <div
+                    style={{
+                        position: 'absolute',
+                        width: '100%',
+                        background: 'white',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        zIndex: 1000,
+                        maxHeight: '200px',
+                        overflowY: 'auto', // Scroll si hay muchas opciones
+                    }}
                 >
                     {filteredOptions.map((option) => (
-                        <Dropdown.Item
+                        <div
                             key={option.id}
                             onClick={() => handleOptionSelect(option)}
+                            style={{
+                                padding: '8px 12px',
+                                cursor: 'pointer',
+                                backgroundColor: 'white',
+                            }}
+                            onMouseEnter={(e) =>
+                                (e.currentTarget.style.backgroundColor = '#f8f9fa')
+                            }
+                            onMouseLeave={(e) =>
+                                (e.currentTarget.style.backgroundColor = 'white')
+                            }
                         >
                             {option.label}
-                        </Dropdown.Item>
+                        </div>
                     ))}
-                </DropdownButton>
+                    {filteredOptions.length === 0 && (
+                        <div
+                            style={{
+                                padding: '8px 12px',
+                                color: '#999',
+                                textAlign: 'center',
+                            }}
+                        >
+                            No hay opciones disponibles.
+                        </div>
+                    )}
+                </div>
             )}
         </div>
     );
