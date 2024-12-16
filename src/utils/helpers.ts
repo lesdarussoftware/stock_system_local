@@ -1,4 +1,5 @@
-import { BuyProduct, Movement, Product, SaleProduct } from "./db";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { BuyProduct, db, Movement, Product, SaleProduct } from "./db";
 import { Item } from "./types";
 
 export function getProductSalePrice(product: Product): number {
@@ -46,4 +47,40 @@ export function getSaleProductsTotal(saleProducts: SaleProduct[]): number {
 
 export function getBuyProductsTotal(buyProducts: BuyProduct[]): number {
     return parseFloat(buyProducts.reduce((acc, bp) => acc + (bp.product_buy_price * bp.amount), 0).toFixed(2));
+}
+
+export async function exportDatabaseToJSONFile(): Promise<{
+    severity: 'SUCCESS' | 'ERROR';
+    headerMessage: string;
+    bodyMessage: string;
+}> {
+    try {
+        const exportData: Record<string, any[]> = {};
+        for (const table of db.tables) {
+            if (table.name === 'tdssdifui') {
+                continue; // Ignora esta tabla
+            }
+            const data = await table.toArray();
+            exportData[table.name] = data;
+        }
+        const jsonString = JSON.stringify(exportData, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'database_export.json';
+        link.click();
+        URL.revokeObjectURL(url);
+        return {
+            severity: 'SUCCESS',
+            headerMessage: 'Datos guardados',
+            bodyMessage: 'Descargue el archivo en su equipo.'
+        }
+    } catch (e) {
+        return {
+            severity: 'ERROR',
+            headerMessage: 'Error al exportar la base de datos',
+            bodyMessage: 'Hubo un error al intentar exportar la base de datos.'
+        }
+    }
 }
