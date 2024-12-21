@@ -19,15 +19,12 @@ export function usePurchases() {
     const purchaseFormData = useForm({
         defaultData: {
             id: '',
-            supplier_id: '',
             date: format(new Date(Date.now()), 'yyyy-MM-dd'),
             status: 'PENDIENTE',
             payments_amount: 1,
             user: ''
         },
-        rules: {
-            supplier_id: { required: true }
-        }
+        rules: {}
     })
 
     const [purchases, setPurchases] = useState<BuyOrder[]>([]);
@@ -61,10 +58,9 @@ export function usePurchases() {
             const toDate = to ? new Date(to) : null;
             return (!fromDate || purchaseDate >= fromDate) && (!toDate || purchaseDate <= toDate);
         });
-        const [data, count, suppliers, buyProducts] = await Promise.all([
+        const [data, count, buyProducts] = await Promise.all([
             filteredCollection.offset(start).limit(offset).toArray(),
             db.buy_orders.count(),
-            db.suppliers.toArray(),
             db.buy_products.toArray()
         ]);
         setTotalRows(count);
@@ -72,7 +68,6 @@ export function usePurchases() {
             const buy_products = buyProducts.filter(bp => +bp.buy_order_id === +p.id);
             return {
                 ...p,
-                supplier: suppliers.find(s => s.id === +p.supplier_id)!.name,
                 total: `$${getBuyProductsTotal(buyProducts)}`,
                 buy_products
             }
@@ -136,7 +131,7 @@ export function usePurchases() {
         try {
             await Promise.all([
                 db.buy_orders.delete(+purchaseFormData.formData.id),
-                db.buy_orders.bulkDelete(items.map(i => i.id))
+                db.buy_products.bulkDelete(items.map(i => i.id))
             ]);
             setBodyMessage('Compra eliminada correctamente.');
             setSeverity('SUCCESS');
@@ -163,12 +158,6 @@ export function usePurchases() {
             label: '#',
             sortable: true,
             accessor: 'id'
-        },
-        {
-            id: 'supplier',
-            label: 'Proveedor',
-            sortable: true,
-            accessor: 'supplier'
         },
         {
             id: 'date',

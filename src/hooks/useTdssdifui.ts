@@ -14,7 +14,7 @@ export function useTdssdifui() {
     } = useContext(MessageContext);
 
     const [bnmhjg] = useState<string>('estoesunaprueba');
-    const [frrtty] = useState<Date>(new Date('2024-12-17T00:00:00.000Z'));
+    const [frrtty] = useState<Date>(new Date('2024-12-27T00:00:00.000Z'));
     const [yoiuyiyyuiy, setYoiuyiyyuiy] = useState<boolean>(false);
     const [xcxvxcv, setXcxvxcv] = useState<string>('');
 

@@ -87,7 +87,6 @@ interface Client {
 
 interface BuyOrder {
     id: number;
-    supplier_id: number;
     date: Date;
     status: 'PENDIENTE' | 'RECIBIDA' | 'CANCELADA';
     user: number;
@@ -179,7 +178,7 @@ db.version(1).stores({
     products: '++id, name, sku, bar_code, buy_price, earn, sale_price, min_stock, is_active, category_id, supplier_id, store_id, created_at, updated_at',
     movements: '++id, product_id, amount, date, type, user, created_at, updated_at',
     clients: '++id, name, phone, email, address, city, created_at, updated_at',
-    buy_orders: '++id, supplier_id, date, status, user, payments_amount, created_at, updated_at',
+    buy_orders: '++id, date, status, user, payments_amount, created_at, updated_at',
     buy_products: '++id, buy_order_id, product_id, amount, product_buy_price, created_at, updated_at',
     sale_orders: '++id, client_id, date, status, user, payments_amount, created_at, updated_at',
     sale_products: '++id, sale_order_id, product_id, amount, product_buy_price, product_earn, product_sale_price, created_at, updated_at',
