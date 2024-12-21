@@ -118,7 +118,10 @@ export function useProducts() {
         try {
             const isValid = await productHasNotSalesOrPurchases(productFormData.formData.id);
             if (isValid) {
-                await db.products.delete(+productFormData.formData.id);
+                await Promise.all([
+                    db.movements.where('product_id').equals(+productFormData.formData.id).delete(),
+                    db.products.delete(+productFormData.formData.id)
+                ]);
                 setBodyMessage('Artículo eliminado correctamente.');
                 setSeverity('SUCCESS');
                 getProducts(filter.page, filter.offset, filter.name, filter.sku);
