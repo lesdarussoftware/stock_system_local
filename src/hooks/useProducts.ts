@@ -55,11 +55,12 @@ export function useProducts() {
         if (name) collection.filter(p => p.name.toLowerCase().includes(name));
         if (sku) collection.filter(p => p.sku.toLowerCase().includes(sku));
         const start = (page - 1) * offset;
-        const [data, count, categories, suppliers, saleProducts, buyProducts, movements] = await Promise.all([
+        const [data, count, categories, suppliers, stores, saleProducts, buyProducts, movements] = await Promise.all([
             collection.offset(start).limit(offset).toArray(),
             db.products.count(),
             db.categories.toArray(),
             db.suppliers.toArray(),
+            db.stores.toArray(),
             db.sale_products.toArray(),
             db.buy_products.toArray(),
             db.movements.toArray()
@@ -69,6 +70,7 @@ export function useProducts() {
             ...p,
             category: categories.find(c => c.id === +p.category_id)?.name || 'Sin categoría',
             supplier: suppliers.find(s => s.id === +p.supplier_id)?.name || 'Sin proveedor',
+            store: stores.find(s => s.id.toString() === p.store_id?.toString())?.name ?? 'Sin depósito',
             stock: getStock(
                 saleProducts.filter(sp => +sp.product_id === +p.id),
                 buyProducts.filter(sp => +sp.product_id === +p.id),
@@ -82,7 +84,7 @@ export function useProducts() {
         const { formData, validate, reset } = productFormData;
         if (validate()) {
             try {
-                const isValid = await skuDoesNotExist(formData.sku);
+                const isValid = await skuDoesNotExist(formData.id, formData.sku, showForm);
                 if (isValid) {
                     if (showForm === 'NEW') {
                         await db.products.add({

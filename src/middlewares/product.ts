@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { db } from "../utils/db";
-import { Item } from "../utils/types";
+import { Item, ShowFormType } from "../utils/types";
 
-export async function skuDoesNotExist(sku: string): Promise<boolean> {
+export async function skuDoesNotExist(id: number, sku: string, showForm: ShowFormType): Promise<boolean> {
     const products = await db.products.toArray();
-    return !products.some(p => p.sku.toLowerCase() === sku.toLowerCase());
+    return !products.some(p => {
+        return (showForm === 'NEW' || (showForm === 'EDIT' && +p.id !== +id)) &&
+            p.sku.toLowerCase() === sku.toLowerCase()
+    });
 }
 
 export function theresStock(products: any[], items: Item[]): boolean {
