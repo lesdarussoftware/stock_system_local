@@ -14,7 +14,7 @@ type SaleFormProps = {
     showForm: ShowFormType;
     saleFormData: any;
     setShowForm: (value: ShowFormType) => void;
-    handleSubmit: (e: any) => void
+    handleSubmit: (e: any, products: Product[]) => void
     clients: Client[];
     products: Product[];
     items: any;
@@ -39,7 +39,7 @@ export function SaleForm({
     const { errors, handleChange, reset, formData } = saleFormData;
 
     return (
-        <Form className='mt-4' onSubmit={e => handleSubmit(e)}>
+        <Form className='mt-4' onSubmit={e => handleSubmit(e, products)}>
             <Form.Label>Cliente</Form.Label>
             {(showForm === 'NEW' || showForm === 'EDIT') &&
                 <Autocomplete

@@ -128,7 +128,7 @@ export function useProducts() {
             }
         } catch (e) {
             setSeverity('ERROR');
-            setBodyMessage('Hubo un error al intentar eliminar el proveedor.');
+            setBodyMessage('Hubo un error al intentar eliminar el artículo.');
         }
         handleClose();
         setHeaderMessage(productFormData.formData.name);

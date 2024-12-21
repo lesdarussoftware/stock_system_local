@@ -15,8 +15,8 @@ export function theresStock(products: any[], items: Item[]): boolean {
 
 export async function productHasNotSalesOrPurchases(id: number): Promise<boolean> {
     const [sales, purchases] = await Promise.all([
-        db.sale_orders.where('product_id').equals(id.toString()).count(),
-        db.buy_orders.where('product_id').equals(id.toString()).count()
+        db.sale_products.where('product_id').equals(id).count(),
+        db.buy_products.where('product_id').equals(id).count()
     ]);
     return sales <= 0 && purchases <= 0;
 }

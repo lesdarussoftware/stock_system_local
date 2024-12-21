@@ -6,10 +6,9 @@ import { MessageContext } from "../contexts/MessageContext";
 
 import { AuthContext } from "../contexts/AuthContext";
 import { useForm } from "./useForm";
-import { useProducts } from "./useProducts";
 
 import { theresStock } from "../middlewares/product";
-import { db, SaleOrder } from "../utils/db";
+import { db, Product, SaleOrder } from "../utils/db";
 import { Item, ShowFormType } from "../utils/types";
 import { getSaleProductsTotal } from "../utils/helpers";
 
@@ -31,7 +30,6 @@ export function useSales() {
             client_id: { required: true }
         }
     })
-    const { products, getProducts } = useProducts();
 
     const [sales, setSales] = useState<SaleOrder[]>([]);
     const [showForm, setShowForm] = useState<ShowFormType>(null);
@@ -82,9 +80,8 @@ export function useSales() {
         }));
     }
 
-    async function handleSubmit(e: any) {
+    async function handleSubmit(e: any, products: Product & { stock: number }[]) {
         e.preventDefault();
-        await getProducts();
         const { formData, validate, reset } = saleFormData;
         if (validate()) {
             try {
