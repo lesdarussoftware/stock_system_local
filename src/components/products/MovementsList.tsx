@@ -14,9 +14,11 @@ import { ShowFormType } from "../../utils/types";
 type MovementsListProps = {
     product: Product;
     setProductShowForm: (value: ShowFormType) => void;
+    products: Product[];
+    setProducts: any;
 }
 
-export function MovementsList({ product, setProductShowForm }: MovementsListProps) {
+export function MovementsList({ product, setProductShowForm, products, setProducts }: MovementsListProps) {
 
     const {
         movements,
@@ -39,6 +41,10 @@ export function MovementsList({ product, setProductShowForm }: MovementsListProp
         getMovements(product.id);
     }, []);
 
+    useEffect(() => {
+        if (showForm === 'NEW') setFormData({ ...formData, product_id: product.id });
+    }, [showForm])
+
     return (
         <>
             {showForm === 'NEW' || showForm === 'EDIT' ?
@@ -52,6 +58,8 @@ export function MovementsList({ product, setProductShowForm }: MovementsListProp
                         showForm={showForm}
                         setShowForm={setShowForm}
                         handleSubmit={handleSubmit}
+                        products={products}
+                        setProducts={setProducts}
                     />
                 </> :
                 <>

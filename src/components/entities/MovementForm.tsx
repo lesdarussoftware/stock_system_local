@@ -4,25 +4,30 @@ import Form from 'react-bootstrap/Form';
 import { format } from 'date-fns';
 
 import { ShowFormType } from '../../utils/types';
+import { Product } from '../../utils/db';
 
 type MovementFormProps = {
     movementFormData: any;
     showForm: ShowFormType;
     setShowForm: (value: ShowFormType) => void;
-    handleSubmit: (e: any) => void
+    handleSubmit: (e: any, products: Product[], setProducts: any) => void
+    products: Product[];
+    setProducts: any;
 }
 
 export function MovementForm({
     movementFormData,
     showForm,
     setShowForm,
-    handleSubmit
+    handleSubmit,
+    products,
+    setProducts
 }: MovementFormProps) {
 
     const { errors, handleChange, reset, formData } = movementFormData;
 
     return (
-        <Form className='mt-4' onSubmit={e => handleSubmit(e)}>
+        <Form className='mt-4' onSubmit={e => handleSubmit(e, products, setProducts)}>
             <Form.Group controlId="type">
                 <Form.Label>Tipo</Form.Label>
                 <Form.Select

@@ -70,6 +70,8 @@ export function Products() {
                     <MovementsList
                         product={formData}
                         setProductShowForm={setShowForm}
+                        products={products}
+                        setProducts={setProducts}
                     /> :
                     <>
                         <div className="d-flex justify-content-between align-items-center mb-2">

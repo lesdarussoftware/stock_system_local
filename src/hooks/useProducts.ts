@@ -5,7 +5,7 @@ import { MessageContext } from "../contexts/MessageContext";
 
 import { useForm } from "./useForm";
 
-import { skuDoesNotExist } from "../middlewares/product";
+import { productHasNotSalesOrPurchases, skuDoesNotExist } from "../middlewares/product";
 import { db, Product } from "../utils/db";
 import { ShowFormType } from "../utils/types";
 import { getProductSalePrice, getStock } from "../utils/helpers";
@@ -116,10 +116,16 @@ export function useProducts() {
 
     async function deleteProduct() {
         try {
-            await db.products.delete(+productFormData.formData.id);
-            setBodyMessage('Artículo eliminado correctamente.');
-            setSeverity('SUCCESS');
-            getProducts(filter.page, filter.offset, filter.name, filter.sku);
+            const isValid = await productHasNotSalesOrPurchases(productFormData.formData.id);
+            if (isValid) {
+                await db.products.delete(+productFormData.formData.id);
+                setBodyMessage('Artículo eliminado correctamente.');
+                setSeverity('SUCCESS');
+                getProducts(filter.page, filter.offset, filter.name, filter.sku);
+            } else {
+                setSeverity('ERROR');
+                setBodyMessage('Este artículo tiene ventas o compras asociadas.');
+            }
         } catch (e) {
             setSeverity('ERROR');
             setBodyMessage('Hubo un error al intentar eliminar el proveedor.');

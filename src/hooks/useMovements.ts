@@ -7,7 +7,7 @@ import { MessageContext } from "../contexts/MessageContext";
 
 import { useForm } from "./useForm";
 
-import { db, Movement } from "../utils/db";
+import { db, Movement, Product } from "../utils/db";
 import { ShowFormType } from "../utils/types";
 
 export function useMovements() {
@@ -52,7 +52,7 @@ export function useMovements() {
     }
 
 
-    async function handleSubmit(e: any) {
+    async function handleSubmit(e: any, products: Product[], setProducts: any) {
         e.preventDefault();
         const { formData, validate, reset } = movementFormData;
         if (validate()) {
@@ -65,6 +65,18 @@ export function useMovements() {
                         created_at: new Date(Date.now()),
                         updated_at: new Date(Date.now())
                     });
+                    getMovements(formData.product_id);
+                    const p = products.find(p => p.id === +formData.product_id) as (Product & { stock: number; }) | undefined;
+                    if (!p) throw new Error('Product not found');
+                    setProducts([
+                        {
+                            ...p,
+                            stock: formData.type === 'INGRESO' ?
+                                p.stock + formData.amount :
+                                p.stock - formData.amount
+                        },
+                        ...products.filter(p => p.id !== +formData.product_id)
+                    ].sort((a, b) => b.id - a.id));
                     setBodyMessage('Movimiento guardado correctamente.');
                 } else if (showForm === 'EDIT') {
                     await db.movements.update(formData.id, { ...formData, updated_at: new Date(Date.now()) });

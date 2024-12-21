@@ -12,3 +12,11 @@ export function theresStock(products: any[], items: Item[]): boolean {
         return products.find(p => +p.id === +i.product_id)?.stock > 0
     });
 }
+
+export async function productHasNotSalesOrPurchases(id: number): Promise<boolean> {
+    const [sales, purchases] = await Promise.all([
+        db.sale_orders.where('product_id').equals(id.toString()).count(),
+        db.buy_orders.where('product_id').equals(id.toString()).count()
+    ]);
+    return sales <= 0 && purchases <= 0;
+}
