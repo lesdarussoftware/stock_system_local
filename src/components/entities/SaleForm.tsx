@@ -40,7 +40,7 @@ export function SaleForm({
 
     return (
         <Form className='mt-4' onSubmit={e => handleSubmit(e)}>
-            <h4 className='mb-2'>Cliente: {clients.find(c => c.id === +formData.client_id)?.name}</h4>
+            <Form.Label>Cliente</Form.Label>
             {(showForm === 'NEW' || showForm === 'EDIT') &&
                 <Autocomplete
                     options={clients.map(c => ({ id: c.id, label: c.name }))}

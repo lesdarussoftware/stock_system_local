@@ -31,7 +31,7 @@ export function ProductForm({
         <Form className='mt-4' onChange={handleChange} onSubmit={e => handleSubmit(e)}>
             <div className='d-flex align-items-end justify-content-between mb-3 gap-5'>
                 <Form.Group controlId="name" className={showForm === 'EDIT' ? 'w-75' : 'w-100'}>
-                    <Form.Label>Nombre</Form.Label>
+                    <Form.Label>Nombre *</Form.Label>
                     <Form.Control name='name' value={formData.name} disabled={showForm === 'VIEW'} />
                     {errors.name?.type === 'required' &&
                         <Form.Text className="text-danger d-block">
@@ -52,7 +52,7 @@ export function ProductForm({
             </div>
             <div className='d-flex justify-content-between mb-3 gap-5'>
                 <Form.Group controlId="sku" className='w-50'>
-                    <Form.Label>SKU</Form.Label>
+                    <Form.Label>SKU *</Form.Label>
                     <Form.Control name='sku' value={formData.sku} disabled={showForm === 'VIEW'} />
                     {errors.sku?.type === 'required' &&
                         <Form.Text className="text-danger d-block">
@@ -104,7 +104,7 @@ export function ProductForm({
             </div>
             <div className='d-flex justify-content-between mb-3'>
                 <Form.Group controlId="category_id" className='w-25'>
-                    <Form.Label>Categoría</Form.Label>
+                    <Form.Label>Categoría *</Form.Label>
                     <Form.Select name='category_id' value={formData.category_id} disabled={showForm === 'VIEW'}>
                         <option value="">Seleccione</option>
                         {categories.map((cat: Category) => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
@@ -116,7 +116,7 @@ export function ProductForm({
                     }
                 </Form.Group>
                 <Form.Group controlId="supplier_id" className='w-25'>
-                    <Form.Label>Proveedor</Form.Label>
+                    <Form.Label>Proveedor *</Form.Label>
                     <Form.Select name='supplier_id' value={formData.supplier_id} disabled={showForm === 'VIEW'}>
                         <option value="">Seleccione</option>
                         {suppliers.map((sup: Supplier) => <option key={sup.id} value={sup.id}>{sup.name}</option>)}

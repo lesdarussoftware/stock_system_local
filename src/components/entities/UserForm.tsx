@@ -18,7 +18,7 @@ export function UserForm({ userFormData, setShowForm, handleSubmit, forAuth }: U
     return (
         <Form className='mt-4' onChange={handleChange} onSubmit={e => handleSubmit(e)}>
             <Form.Group controlId="username" className='mb-3'>
-                <Form.Label>Nombre de usuario</Form.Label>
+                <Form.Label>Nombre de usuario *</Form.Label>
                 <Form.Control name='username' value={formData.username} />
                 {errors.username?.type === 'required' &&
                     <Form.Text className="text-danger d-block">
@@ -32,7 +32,7 @@ export function UserForm({ userFormData, setShowForm, handleSubmit, forAuth }: U
                 }
             </Form.Group>
             <Form.Group controlId="password">
-                <Form.Label>Contraseña</Form.Label>
+                <Form.Label>Contraseña *</Form.Label>
                 <Form.Control name='password' type='password' value={formData.password} />
                 {errors.password?.type === 'required' &&
                     <Form.Text className="text-danger d-block">

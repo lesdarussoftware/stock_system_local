@@ -40,7 +40,7 @@ export function PurchaseForm({
 
     return (
         <Form className='mt-4' onSubmit={e => handleSubmit(e)}>
-            <h4 className='mb-2'>Proveedor: {suppliers.find(s => s.id === +formData.supplier_id)?.name}</h4>
+            <Form.Label>Proveedor</Form.Label>
             {(showForm === 'NEW' || showForm === 'EDIT') &&
                 <Autocomplete
                     options={suppliers.map(s => ({ id: s.id, label: s.name }))}

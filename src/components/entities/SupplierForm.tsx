@@ -17,7 +17,7 @@ export function SupplierForm({ supplierFormData, setShowForm, handleSubmit }: Su
     return (
         <Form className='mt-4' onChange={handleChange} onSubmit={e => handleSubmit(e)}>
             <Form.Group controlId="name">
-                <Form.Label>Nombre</Form.Label>
+                <Form.Label>Nombre *</Form.Label>
                 <Form.Control name='name' value={formData.name} />
                 {errors.name?.type === 'required' &&
                     <Form.Text className="text-danger d-block">
