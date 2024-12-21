@@ -131,7 +131,8 @@ export function usePurchases() {
         try {
             await Promise.all([
                 db.buy_orders.delete(+purchaseFormData.formData.id),
-                db.buy_products.bulkDelete(items.map(i => i.id))
+                db.buy_products.bulkDelete(items.map(i => i.id)),
+                db.buy_payments.where('buy_order_id').equals(+purchaseFormData.formData.id).delete()
             ]);
             setBodyMessage('Compra eliminada correctamente.');
             setSeverity('SUCCESS');

@@ -147,7 +147,8 @@ export function useSales() {
         try {
             await Promise.all([
                 db.sale_orders.delete(+saleFormData.formData.id),
-                db.sale_products.bulkDelete(items.map(i => i.id))
+                db.sale_products.bulkDelete(items.map(i => i.id)),
+                db.sale_payments.where('sale_order_id').equals(+saleFormData.formData.id).delete()
             ]);
             setBodyMessage('Venta eliminada correctamente.');
             setSeverity('SUCCESS');
