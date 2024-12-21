@@ -5,6 +5,7 @@ import { MessageContext } from "../contexts/MessageContext";
 
 import { useForm } from "./useForm";
 
+import { clientHasNotSales } from "../middlewares/client";
 import { db, Client } from "../utils/db";
 import { ShowFormType } from "../utils/types";
 
@@ -84,10 +85,16 @@ export function useClients() {
 
     async function deleteClient() {
         try {
-            await db.suppliers.delete(+clientFormData.formData.id);
-            setBodyMessage('Cliente eliminado correctamente.');
-            setSeverity('SUCCESS');
-            getClients(filter.page, filter.offset, filter.name);
+            const isValid = await clientHasNotSales(clientFormData.formData.id);
+            if (isValid) {
+                await db.clients.delete(+clientFormData.formData.id);
+                setBodyMessage('Cliente eliminado correctamente.');
+                setSeverity('SUCCESS');
+                getClients(filter.page, filter.offset, filter.name);
+            } else {
+                setSeverity('ERROR');
+                setBodyMessage('Este cliente tiene ventas asociadas.');
+            }
         } catch (e) {
             setSeverity('ERROR');
             setBodyMessage('Hubo un error al intentar eliminar el cliente.');
