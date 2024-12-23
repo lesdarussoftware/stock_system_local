@@ -82,13 +82,14 @@ export function useBuyPayments() {
             await db.buy_payments.delete(+formData.id);
             setBodyMessage('Pago eliminado correctamente.');
             setSeverity('SUCCESS');
+            setHeaderMessage('Éxito');
             getBuyPayments(+formData.buy_order_id, filter.page, filter.offset);
         } catch (e) {
+            setHeaderMessage('Error');
             setSeverity('ERROR');
             setBodyMessage('Hubo un error al intentar eliminar el pago.');
         }
         handleClose();
-        setHeaderMessage('Éxito');
         setOpenMessage(true);
     }
 

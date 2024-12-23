@@ -80,15 +80,16 @@ export function useSalePayments() {
         try {
             const { formData } = salePaymentFormData;
             await db.sale_payments.delete(+formData.id);
+            setHeaderMessage('Éxito');
             setBodyMessage('Pago eliminado correctamente.');
             setSeverity('SUCCESS');
             getSalePayments(+formData.sale_order_id, filter.page, filter.offset);
         } catch (e) {
+            setHeaderMessage('Error');
             setSeverity('ERROR');
             setBodyMessage('Hubo un error al intentar eliminar el pago.');
         }
         handleClose();
-        setHeaderMessage('Éxito');
         setOpenMessage(true);
     }
 

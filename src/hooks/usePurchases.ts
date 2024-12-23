@@ -134,15 +134,16 @@ export function usePurchases() {
                 db.buy_products.bulkDelete(items.map(i => i.id)),
                 db.buy_payments.where('buy_order_id').equals(+purchaseFormData.formData.id).delete()
             ]);
+            setHeaderMessage('Éxito');
             setBodyMessage('Compra eliminada correctamente.');
             setSeverity('SUCCESS');
             getPurchases(filter.page, filter.offset);
         } catch (e) {
+            setHeaderMessage('Error');
             setSeverity('ERROR');
             setBodyMessage('Hubo un error al intentar eliminar la compra.');
         }
         handleClose();
-        setHeaderMessage('Éxito');
         setOpenMessage(true);
     }
 
