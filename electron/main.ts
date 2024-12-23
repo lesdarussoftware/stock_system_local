@@ -1,9 +1,7 @@
 import { app, BrowserWindow, screen } from 'electron'
-import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 
-const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 process.env.APP_ROOT = path.join(__dirname, '..')
@@ -28,24 +26,22 @@ function createWindow() {
     height: workAreaSize.height,
     icon: iconPath,
     title: 'Sistema de stock - Lesdarus Software',
-    resizable: false, // Deshabilitar el redimensionamiento de la ventana
+    resizable: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
-      // devTools: false // Bloquea DevTools en producción
+      devTools: false
     },
   })
 
-  // Ocultar el menú por defecto
-  // win.setMenu(null)
+  win.setMenu(null)
 
-  // Evita la apertura de DevTools manualmente
-  // win.webContents.on('devtools-opened', () => {
-  //   win?.webContents.closeDevTools()
-  // })
+  win.webContents.on('devtools-opened', () => {
+    win?.webContents.closeDevTools()
+  })
 
-  // win.webContents.on('did-finish-load', () => {
-  //   win?.webContents.send('main-process-message', (new Date).toLocaleString())
-  // })
+  win.webContents.on('did-finish-load', () => {
+    win?.webContents.send('main-process-message', (new Date).toLocaleString())
+  })
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
@@ -69,7 +65,6 @@ app.on('activate', () => {
 
 app.whenReady().then(createWindow)
 
-// Script de ofuscación para incluir en tu proceso de build:
 import { exec } from 'node:child_process'
 if (!VITE_DEV_SERVER_URL) {
   exec('javascript-obfuscator ./dist-electron --output ./dist-electron-obfuscated')
