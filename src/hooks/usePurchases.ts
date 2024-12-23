@@ -113,16 +113,17 @@ export function usePurchases() {
                     setBodyMessage('Compra editada correctamente.');
                     getPurchases(filter.page, filter.offset);
                 }
+                setHeaderMessage('Éxito');
                 setSeverity('SUCCESS');
                 setShowForm(null);
                 setItems([]);
                 setIdsToDelete([]);
                 reset();
             } catch (e) {
+                setHeaderMessage('Error');
                 setSeverity('ERROR');
                 setBodyMessage('Hubo un error al intentar guardar la compra.');
             }
-            setHeaderMessage('Éxito');
             setOpenMessage(true);
         }
     }
