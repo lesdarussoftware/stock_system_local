@@ -9,6 +9,7 @@ import { useTdssdifui } from "../../hooks/useTdssdifui";
 import { exportDatabaseToJSONFile } from "../../utils/helpers";
 import { useContext } from "react";
 import { MessageContext } from "../../contexts/MessageContext";
+import { format } from "date-fns";
 
 type LayoutProps = {
     children: React.ReactNode;
@@ -20,7 +21,7 @@ export function Layout({ children }: LayoutProps) {
 
     const navigate = useNavigate();
 
-    const { yoiuyiyyuiy, xcxvxcv, setXcxvxcv, handleIuudsfysdu } = useTdssdifui();
+    const { yoiuyiyyuiy, xcxvxcv, setXcxvxcv, handleIuudsfysdu, frrtty } = useTdssdifui();
     const { logout } = useUsers();
 
     const handleExport = async () => {
@@ -45,7 +46,13 @@ export function Layout({ children }: LayoutProps) {
     return (
         <div>
             <header>
-                <Navbar bg="primary">
+
+                <Navbar bg="primary" className="d-flex justify-content-between px-3">
+                    {new Date(Date.now()) < frrtty &&
+                        <div className="text-white d-flex align-items-center w-25">
+                            Venc.: {format(new Date(frrtty), 'dd/MM/yy')}
+                        </div>
+                    }
                     <Nav className="d-flex justify-content-end gap-3 w-100 px-3">
                         <Nav.Link className="text-white" onClick={() => navigate('/products')}>Artículos</Nav.Link>
                         <Nav.Link className="text-white" onClick={() => navigate('/clients')}>Clientes</Nav.Link>

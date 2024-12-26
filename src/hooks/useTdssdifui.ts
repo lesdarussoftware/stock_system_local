@@ -13,8 +13,8 @@ export function useTdssdifui() {
         setOpenMessage: wegfghfsdf
     } = useContext(MessageContext);
 
-    const [bnmhjg] = useState<string>('estoesunaprueba');
-    const [frrtty] = useState<Date>(new Date('2024-12-27T00:00:00.000Z'));
+    const [bnmhjg] = useState<string>(import.meta.env.VITE_APP_GEGEGERG);
+    const [frrtty] = useState<Date>(new Date(import.meta.env.VITE_APP_TUKJYKYUK));
     const [yoiuyiyyuiy, setYoiuyiyyuiy] = useState<boolean>(false);
     const [xcxvxcv, setXcxvxcv] = useState<string>('');
 
@@ -55,5 +55,5 @@ export function useTdssdifui() {
         wegfghfsdf(true);
     }
 
-    return { yoiuyiyyuiy, handleIuudsfysdu, xcxvxcv, setXcxvxcv }
+    return { yoiuyiyyuiy, handleIuudsfysdu, xcxvxcv, setXcxvxcv, frrtty }
 }
