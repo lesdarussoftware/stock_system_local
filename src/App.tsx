@@ -3,6 +3,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom'
 
 import { AuthProvider } from './providers/AuthProvider'
 import { MessageProvider } from './providers/MessageProvider'
+import { BarcodeReaderProvider } from './providers/BarcodeReaderProvider'
 
 import { LoginScreen } from './screens/LoginScreen'
 import { Products } from './screens/Products'
@@ -26,19 +27,21 @@ function App() {
   return (
     <AuthProvider>
       <MessageProvider>
-        <HashRouter>
-          <Routes>
-            <Route path='/' element={<LoginScreen />} />
-            <Route path='/products' element={<Products />} />
-            <Route path='/clients' element={<Clients />} />
-            <Route path='/sales' element={<Sales />} />
-            <Route path='/purchases' element={<Purchases />} />
-            <Route path='/categories' element={<Categories />} />
-            <Route path='/suppliers' element={<Suppliers />} />
-            <Route path='/stores' element={<Stores />} />
-            <Route path='/users' element={<Users />} />
-          </Routes>
-        </HashRouter>
+        <BarcodeReaderProvider>
+          <HashRouter>
+            <Routes>
+              <Route path='/' element={<LoginScreen />} />
+              <Route path='/products' element={<Products />} />
+              <Route path='/clients' element={<Clients />} />
+              <Route path='/sales' element={<Sales />} />
+              <Route path='/purchases' element={<Purchases />} />
+              <Route path='/categories' element={<Categories />} />
+              <Route path='/suppliers' element={<Suppliers />} />
+              <Route path='/stores' element={<Stores />} />
+              <Route path='/users' element={<Users />} />
+            </Routes>
+          </HashRouter>
+        </BarcodeReaderProvider>
       </MessageProvider>
     </AuthProvider>
   )
