@@ -28,7 +28,7 @@ export function BarcodeReaderProvider({ children }: BarcodeReaderProviderProps) 
 
     const handleDecode = (result: string) => {
         setBarcode(result);
-        stopCamera(); // Detener la cámara después de escanear.
+        stopCamera();
     };
 
     const useScanner = (enable: boolean) => {
@@ -38,7 +38,6 @@ export function BarcodeReaderProvider({ children }: BarcodeReaderProviderProps) 
     useEffect(() => {
         if (scannerEnabled) {
             const handleKeyPress = (e: KeyboardEvent) => {
-                // Supongamos que el lector emula un teclado.
                 if (e.key === 'Enter') {
                     console.log(`Código escaneado: ${barcode}`);
                 } else {
@@ -60,7 +59,7 @@ export function BarcodeReaderProvider({ children }: BarcodeReaderProviderProps) 
                     const result = await codeReader.decodeFromVideoElement(videoElement);
                     if (result) handleDecode(result.getText());
                 } catch (error) {
-                    // Continuar intentando leer
+                    console.log('Ocurrió un error al intentar escanear.')
                 }
             };
 
